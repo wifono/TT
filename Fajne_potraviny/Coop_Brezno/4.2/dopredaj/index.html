@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title></title>
+  <script src="textFit.js"></script>
+  <style>
+    @font-face {
+      font-family: 'Arial';
+      font-style: normal;
+      font-weight: 400;
+      src: url(./fonts/arial.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: 'Arial';
+      font-style: normal;
+      font-weight: 700;
+      src: url(./fonts/arialbd.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Harabara";
+      font-style: normal;
+      font-weight: 400;
+      src: url(./fonts/HarabaraCE.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Harabara";
+      font-style: normal;
+      font-weight: 700;
+      src: url(./fonts/HarabaraCE.ttf) format("truetype");
+    }
+
+    body {
+      font-family: "Arial";
+      -webkit-font-smoothing: none;
+      image-rendering: optimizeSpeed;
+      /* STOP SMOOTHING, GIVE ME SPEED  */
+      image-rendering: -webkit-optimize-contrast;
+      /* Chrome (and eventually Safari) */
+      image-rendering: optimize-contrast;
+      /* CSS3 Proposed                  */
+      margin: 0;
+      padding: 0;
+    }
+
+    div {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      z-index: 5;
+    }
+
+    #name {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+
+      /* Size  */
+      width: 390px;
+      height: 82px;
+
+      font-weight: 700;
+      overflow-wrap: break-word;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    #price_box {
+      position: absolute;
+      top: 95px;
+      right: 4px;
+      background: white;
+      color: red;
+
+      /* Size  */
+      width: 270px;
+      height: 112px;
+    }
+
+    #price {
+      position: absolute;
+      top: -4px;
+      left: 0px;
+
+      width: 178px;
+      height: 120px;
+
+      font-size: 116px;
+      font-weight: 700;
+      line-height: 120px;
+      text-align: right;
+      overflow: hidden;
+    }
+
+    #price_decimal {
+      position: absolute;
+      bottom: 45px;
+      left: 185px;
+
+      font-size: 60px;
+      font-weight: 700;
+      line-height: 100%;
+      text-align: right;
+    }
+
+    #price_eur {
+      position: absolute;
+      bottom: 14px;
+      left: 185px;
+
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 100%;
+      text-align: right;
+    }
+
+    #ean {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+
+      width: 140px;
+      height: 18px;
+
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    #unit_price {
+      position: absolute;
+      bottom: 22px;
+      right: 4px;
+
+      width: 140px;
+      height: 18px;
+
+      font-weight: 700;
+      text-align: right;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    #parameters_container {
+      bottom: 3px;
+      left: 3px;
+      overflow: hidden;
+      width: 280px;
+      height: 92px;
+    }
+
+    #parameters {
+      position: absolute;
+      font-size: 12px;
+      line-height: 15px;
+      width: 208px;
+      bottom: 0px;
+      left: 0px;
+      /* white-space: nowrap; */
+    }
+
+    #sale {
+      position: absolute;
+      top: 95px;
+      left: 20px;
+      width: 90px;
+      padding: 3px 0 3px 0;
+      /* height: 34px; */
+      /* line-height: 34px; */
+
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      color: #fff;
+
+      background-color: #ff0000;
+    }
+
+    #sale:before {
+      content: "";
+      position: absolute;
+      top: 0px;
+      left: -10px;
+      width: 10px;
+      height: 100%;
+      background: inherit;
+      border-radius: 30% 0 0 30%;
+    }
+
+    #sale:after {
+      content: "";
+      position: absolute;
+      top: 0px;
+      right: -5px;
+      width: 10px;
+      height: 100%;
+      background: inherit;
+      border-radius: 0 30% 30% 0;
+    }
+  </style>
+  <script>
+    function appendParameter(label, param) {
+      if (typeof param !== "undefined" && param != "") {
+        var tempElement;
+        var tempBr = document.createElement("br");
+
+        if (label.length) {
+          tempElement = document.createElement("span");
+          tempElement.style.fontWeight = "bold";
+          tempElement.innerHTML = label;
+          getID("parameters").appendChild(tempElement);
+        }
+        tempElement = document.createElement("span");
+        tempElement.innerHTML = param;
+        getID("parameters").appendChild(tempElement);
+        getID("parameters").appendChild(tempBr);
+      } else if (param === false && label.length) {
+        var tempElement = document.createElement("span");
+        tempElement.innerHTML = label;
+        getID("parameters").appendChild(tempElement);
+        getID("parameters").appendChild(document.createElement("br"));
+      }
+    }
+
+    function getID(ID) {
+      return document.getElementById(ID);
+    }
+
+    function style(id) {
+      return document.getElementById(id).style;
+    }
+
+    function priceSplit(price) {
+      if (typeof price !== 'undefined' && price !== '') {
+        return price.split(".")
+      } else {
+        return ['0', '00']
+      }
+    }
+    function thousandSeparator(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function setPageData(data) {
+      data.sale_price = priceSplit(data.sale_price);
+
+      getID('ean').innerHTML = data.ean;
+      getID('name').innerHTML = data.name;
+      getID('price').innerHTML = data.sale_price[0];
+      getID('price_decimal').innerHTML = data.sale_price[1];
+      if (data.unit_measure !== data.unit_price_unit_measure) {
+        style("price_eur").fontSize = "22px"
+        getID("price_eur").innerHTML = "€/" + data.unit_measure
+      } else {
+        style("price_eur").fontSize = "34px"
+        getID("price_eur").innerHTML = "EUR"
+      }
+      getID("unit_price").innerHTML =
+        "JC: " + data.unit_price + " €/" + data.unit_price_unit_measure;
+
+      getID('parameters').innerHTML = "";
+      appendParameter('Dodávateľ: ', data.supplier);
+      switch (data.typ_template) {
+        case "ovocie_zelenina":
+          appendParameter('Kr. pôvodu: ', data.place_of_origin);
+          appendParameter('Tr. kvality: ', data.grade);
+          appendParameter('Odroda: ', data.variety);
+          break;
+        case "cerstve_maso":
+        case "masove_vyrobky":
+        case "pecivo":
+          appendParameter(data.alergens, false);
+          appendParameter(data.description, false);
+          break;
+        case "zakusky":
+          appendParameter(data.alergens, false);
+          break;
+        case "salaty":
+        case "syry":
+        default:
+          // nezobrazujeme ziadne dodatocne parametre
+          break;
+      }
+
+      if (data.isPackaged) {
+        appendParameter("Dátum rozbalenia: ", data.open_date);
+        appendParameter("Spotrebujte do: ", data.expiration_date);
+      }
+
+      if (data.price[0].length > 2) {
+        style("price_decimal").left = style("price_eur").left = '185px';
+        style("price").width = '178px';
+        style("price").fontSize = '96px';
+        style("price_decimal").fontSize = '50px';
+        // style("price_eur").fontSize = '32px';
+      } else {
+        style("price_decimal").left = style("price_eur").left = '185px';
+        style("price").width = '178px';
+        style("price").fontSize = '118px';
+        style("price_decimal").fontSize = '60px';
+        // style("price_eur").fontSize = '38px';
+      }
+
+      if (data.rp_price.length > 0) {
+        appendParameter("záloh za obal: " + data.rp_price + "€", false)
+      }
+
+      style('price').fontFamily = style('price_decimal').fontFamily = style('price_eur').fontFamily = data.tempo ? 'Harabara' : 'Arial';
+
+      textFit(getID('name'), {
+        minFontSize: 10,
+        multiLine: true,
+        alignVert: true
+      });
+      return true;
+    }
+
+    // window.onload = function () {
+    //   setPageData({
+    //     _id: "64e874d5e9e6c8114431ad66",
+    //     sku: "53",
+    //     store: "DEFAULT_STORE_CODE",
+    //     ean: "8588003572417",
+    //     category: "SLANÉ TYČINKY",
+    //     name: "Tyčinky slané-cereálne B 100g",
+    //     price: "898.01",
+    //     unit_price: "10.100",
+    //     sale_price: "",
+    //     sale_unit_price: "0.000",
+    //     coop_card_price: "",
+    //     coop_card_unit_price: "0.000",
+    //     unit_price_ratio: "0.100",
+    //     unit_measure: "kg",
+    //     unit_price_unit_measure: "kg",
+    //     discount_percentage: "0.00",
+    //     package: "0.00",
+    //     supplier: "COOP Jednota Brezno, spotrebné druž",
+    //     description: "pekárenský  výrobok",
+    //     alergens: "",
+    //     action_type: "",
+    //     pricelist_name: "",
+    //     price_valid_from: "15.08.2023 09:04",
+    //     price_valid_to: "",
+    //     valid: "1",
+    //     dual_price: "",
+    //     supplier_city: "Brezno",
+    //     product_group: "35",
+    //     category_coop: "3.5.1.4.01",
+    //     manufacturer_number: "40993",
+    //     manufacturer: "Pekáreň Čierny Balog",
+    //     manufacturer_city: "Čierny Balog",
+    //     brand: "",
+    //     consumption_date: "",
+    //     open_date: "",
+    //     rp_price: "111",
+    //     typ_template: "syry",
+    //     typ_action: "akcia",
+    //     template: "",
+    //     tempo: true,
+    //   });
+    // };
+  </script>
+</head>
+
+<body style="background: wheat">
+  <div id="tag" style="width: 400px; height: 300px; top: 0; left: 0; overflow: hidden; background-color: #fff">
+    <div id="name"></div>
+    <div id="sale">DOPREDAJ</div>
+    <div id="price_box">
+      <div id="price"></div>
+      <div id="price_decimal"></div>
+      <div id="price_eur"></div>
+    </div>
+    <div id="parameters_container">
+      <div id="parameters"></div>
+    </div>
+    <div id="ean"></div>
+    <div id="unit_price"></div>
+  </div>
+</body>
+
+</html>

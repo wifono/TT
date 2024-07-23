@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <script src="textFit.js"></script>
+    <title></title>
+    <style>
+      @font-face {
+        font-family: "Arial";
+        font-style: normal;
+        font-weight: 400;
+        src: url(./fonts/arial.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "Arial";
+        font-style: normal;
+        font-weight: 700;
+        src: url(./fonts/arialbd.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "Harabara";
+        font-style: normal;
+        src: url(./fonts/HarabaraCE.ttf) format("truetype");
+      }
+
+      body {
+        font-family: "Arial";
+        -webkit-font-smoothing: none;
+        image-rendering: optimizeSpeed;
+        /* STOP SMOOTHING, GIVE ME SPEED  */
+        image-rendering: -webkit-optimize-contrast;
+        /* Chrome (and eventually Safari) */
+        image-rendering: optimize-contrast;
+        /* CSS3 Proposed                  */
+        margin: 0;
+        padding: 0;
+      }
+
+      div {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        z-index: 5;
+      }
+
+      #name {
+        top: 5px;
+        left: 4px;
+
+        /* Size  */
+        width: 192px;
+        height: 65px;
+        font-weight: 700;
+        text-align: left;
+      }
+
+      #price_box {
+        top: 78px;
+        right: 0px;
+        color: white;
+
+        /* Size  */
+        width: 200px;
+        height: 90px;
+      }
+
+      #sale {
+        top: 4px;
+        left: 4px;
+
+        font-size: 17px;
+        font-weight: 700;
+        text-align: center;
+        color: #fff;
+      }
+
+      #price {
+        font-family: "Harabara";
+        overflow: hidden;
+        left: 0px;
+        line-height: 90px;
+        font-weight: 700;
+        text-align: right;
+        width: 100px;
+      }
+
+      #price_decimal {
+        font-family: "Harabara";
+        font-weight: 700;
+        line-height: 100%;
+        text-align: right;
+      }
+
+      #price_eur {
+        font-family: "Harabara";
+        font-weight: 700;
+        line-height: 100%;
+        text-align: left;
+      }
+
+      #unit_price {
+        bottom: 39px;
+        right: 10px;
+
+        width: 92px;
+        height: 16px;
+
+        line-height: 16px;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: right;
+      }
+
+      #price_30days {
+        bottom: 2px;
+        left: 4px;
+
+        height: 16px;
+        font-size: 14px;
+
+        line-height: 16px;
+        font-weight: 700;
+        text-align: left;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      #sku {
+        left: 4px;
+        bottom: 0px;
+        height: 16px;
+        font-size: 14px;
+
+        line-height: 16px;
+        font-weight: 700;
+        text-align: left;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      #stripe {
+        bottom: 114px;
+
+        height: 20px;
+        width: 100%;
+        font-size: 14px;
+        background-color: red;
+        color: white;
+
+        text-align: center;
+
+        line-height: 21px;
+        font-weight: 700;
+        font-size: 18px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    </style>
+    <script>
+      function getID(ID) {
+        return document.getElementById(ID);
+      }
+
+      function priceSplit(price) {
+        return price.split(".");
+      }
+
+      function setPageData(data) {
+        data.price = priceSplit(data.price);
+
+        getID("name").innerHTML = data.name;
+        getID("sku").innerHTML = data.sku;
+        getID("price").innerHTML = data.price[0] + ",";
+        getID("price_decimal").innerHTML = data.price[1];
+        getID("unit_price").innerHTML =
+          data.unit_price + " €/" + data.unit_measure;
+        getID("price_30days").innerHTML =
+          "najniž.cena za 30dní: " + data.price_30days + "€";
+
+        if (data.typ_template === "1") {
+          getID("price_box").style.backgroundColor = "white";
+          getID("price_box").style.color = "red";
+          getID("stripe").style.display = "block";
+        } else {
+          getID("price_box").style.backgroundColor = "#ffffff";
+          getID("price_box").style.color = "#000000";
+          getID("stripe").style.display = "none";
+        }
+
+        if (data.price[0].length > 1) {
+          getID("price").style.fontSize = "78px";
+          getID("price").style.top = "10px";
+          getID("price").style.width = "100px";
+          getID("price").style.left = "5px";
+          getID("price_decimal").style.fontSize = "42px";
+          getID("price_decimal").style.top = "22px";
+          getID("price_decimal").style.left = "100px";
+          getID("price_eur").style.fontSize = "26px";
+          getID("price_eur").style.bottom = "6px";
+          getID("price_eur").style.left = "148px";
+          if (data.unit_measure_unit === "1") {
+            getID("price_eur").style.fontSize = "16px";
+            getID("price_eur").style.bottom = "40px";
+            getID("price_eur").style.left = "148px";
+            getID("price_eur").innerHTML = "€/100g";
+          } else {
+            getID("price_eur").style.fontSize = "26px";
+            getID("price_eur").style.bottom = "29px";
+            getID("price_eur").style.left = "148px";
+            getID("price_eur").innerHTML = "EUR";
+          }
+        } else {
+          getID("price").style.fontSize = "90px";
+          getID("price").style.top = "7px";
+          getID("price").style.left = "-20px";
+          getID("price").style.width = "100px";
+          getID("price_decimal").style.fontSize = "58px";
+          getID("price_decimal").style.top = "12px";
+          getID("price_decimal").style.left = "80px";
+          getID("price_eur").style.fontSize = "26px";
+          getID("price_eur").style.bottom = "6px";
+          getID("price_eur").style.left = "148px";
+          if (data.unit_measure_unit === "1") {
+            getID("price_eur").style.fontSize = "16px";
+            getID("price_eur").style.bottom = "40px";
+            getID("price_eur").style.left = "148px";
+            getID("price_eur").innerHTML = "€/100g";
+          } else {
+            getID("price_eur").style.fontSize = "26px";
+            getID("price_eur").style.bottom = "29px";
+            getID("price_eur").style.left = "148px";
+            getID("price_eur").innerHTML = "EUR";
+          }
+        }
+
+        if (
+          typeof data.price_30days !== "undefined" &&
+          data.price_30days !== "" &&
+          data.price_30days !== "0.00" &&
+          data.price_30days >= 0 &&
+          data.price_30days !== 0.0
+        ) {
+          getID("price_30days").style.display = "block";
+          getID("sku").style.bottom = "15px";
+        } else {
+          getID("price_30days").style.display = "none";
+          getID("sku").style.bottom = "1px";
+        }
+
+        textFit(getID("name"), {
+          minFontSize: 12,
+          multiLine: true,
+          alignVert: true,
+        });
+
+        return true;
+      }
+
+      // window.onload = function () {
+      //   setPageData({
+      //     _id: "61fa82a9cc54e26bfe9594dd",
+      //     sku: "296945",
+      //     store: "085",
+      //     name: "SYR TEHLA MICHALOVSKA",
+      //     supplier: "SYRAREN",
+      //     grade: "",
+      //     price: "6.90",
+      //     unit_price: "6.900",
+      //     unit_measure: "kg",
+      //     sale_price: "0.00",
+      //     sale_percentage: "0",
+      //     unit_sale_price: "",
+      //     unit_measure_sale_price: "kg",
+      //     expiration_date: "",
+      //     place_of_origin: "",
+      //     alergens: "obsahuje:7",
+      //     description: "",
+      //     storage_conditions: "",
+      //     pricelist_priority: "(610)",
+      //     typ_template: "1",
+      //     createdAt: "2022-02-02T13:10:01.201Z",
+      //     updatedAt: "2022-02-02T13:10:01.203Z",
+      //     price_30days: "0.00",
+      //   });
+      // };
+    </script>
+  </head>
+
+  <body style="background: wheat">
+    <div
+      style="
+        width: 200px;
+        height: 200px;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        background-color: #fff;
+      "
+    >
+      <div id="name"></div>
+      <div id="rectangle"></div>
+      <div id="price_box">
+        <div id="sale">AKCIA</div>
+        <div id="price">&nbsp;</div>
+        <div id="price_decimal">&nbsp;</div>
+        <div id="price_eur">&nbsp;</div>
+      </div>
+      <div id="unit_price"></div>
+      <div id="sku"></div>
+      <div id="price_30days"></div>
+      <div id="stripe">AKCIA</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title></title>
+  <script src="textFit.js"></script>
+  <style>
+    @font-face {
+      font-family: 'Arial';
+      font-style: normal;
+      font-weight: 400;
+      src: url(./fonts/arial.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: 'Arial';
+      font-style: normal;
+      font-weight: 700;
+      src: url(./fonts/arialbd.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Harabara";
+      font-style: normal;
+      font-weight: 400;
+      src: url(./fonts/HarabaraCE.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Harabara";
+      font-style: normal;
+      font-weight: 700;
+      src: url(./fonts/HarabaraCE.ttf) format("truetype");
+    }
+
+    body {
+      font-family: "Arial";
+      -webkit-font-smoothing: none;
+      image-rendering: optimizeSpeed;
+      /* STOP SMOOTHING, GIVE ME SPEED  */
+      image-rendering: -webkit-optimize-contrast;
+      /* Chrome (and eventually Safari) */
+      image-rendering: optimize-contrast;
+      /* CSS3 Proposed                  */
+      margin: 0;
+      padding: 0;
+    }
+
+    div {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      z-index: 5;
+    }
+
+    #name {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+
+      /* Size  */
+      width: 98%;
+      height: 52px;
+      font-weight: 700;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    #price_box {
+      position: absolute;
+      top: 58px;
+      right: 0px;
+
+      /* Size  */
+      width: 180px;
+      height: 85px;
+      background-color: #fff;
+      color: #f00;
+    }
+
+    #price {
+      position: absolute;
+      top: -4px;
+      left: 0px;
+
+      width: 128px;
+      height: 85px;
+
+      font-size: 74px;
+      font-weight: 700;
+      line-height: 95px;
+      text-align: right;
+      overflow: hidden;
+    }
+
+    #price_decimal {
+      position: absolute;
+      bottom: 32px;
+      left: 130px;
+
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 100%;
+      text-align: right;
+    }
+
+    #price_eur {
+      position: absolute;
+      bottom: 14px;
+      left: 130px;
+
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 100%;
+      text-align: right;
+    }
+
+    #parameters_container {
+      bottom: 3px;
+      left: 3px;
+      overflow: hidden;
+      width: 205px;
+      height: 92px;
+    }
+
+    #parameters {
+      position: absolute;
+      font-size: 12px;
+      line-height: 18px;
+      width: 205px;
+      bottom: 0px;
+      left: 0px;
+      /* white-space: nowrap; */
+    }
+
+    #sale {
+      position: absolute;
+      top: 58px;
+      left: 40px;
+      /* width: 120px; */
+      height: 28px;
+      line-height: 28px;
+      padding: 0 12px 0 12px;
+
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      color: #fff;
+
+      background-color: #ff0000;
+    }
+
+    #sale:before {
+      content: "";
+      position: absolute;
+      top: 0px;
+      left: -10px;
+      width: 20px;
+      height: 100%;
+      background: inherit;
+      border-radius: 50% 0 0 50%;
+    }
+
+    #sale:after {
+      content: "";
+      position: absolute;
+      top: 0px;
+      right: -10px;
+      width: 20px;
+      height: 100%;
+      background: inherit;
+      border-radius: 0 50% 50% 0;
+    }
+
+    #ean {
+      position: absolute;
+      bottom: 1px;
+      right: 2px;
+      text-align: right;
+
+      width: 145px;
+      height: 18px;
+
+      font-weight: 700;
+      text-align: right;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    #unit_price {
+      position: absolute;
+      bottom: 19px;
+      right: 2px;
+
+      width: 120px;
+      height: 18px;
+
+      font-weight: 700;
+      text-align: right;
+      overflow: hidden;
+      font-size: 14px;
+    }
+  </style>
+  <script>
+    function appendParameter(label, param) {
+      if (typeof param !== "undefined" && param != "") {
+        var tempElement;
+        var tempBr = document.createElement("br");
+
+        if (label.length) {
+          tempElement = document.createElement("span");
+          tempElement.style.fontWeight = "bold";
+          tempElement.innerHTML = label;
+          getID("parameters").appendChild(tempElement);
+        }
+        tempElement = document.createElement("span");
+        tempElement.innerHTML = param;
+        getID("parameters").appendChild(tempElement);
+        getID("parameters").appendChild(tempBr);
+      } else if (param === false && label.length) {
+        var tempElement = document.createElement("span");
+        tempElement.innerHTML = label;
+        getID("parameters").appendChild(tempElement);
+        getID("parameters").appendChild(document.createElement("br"));
+      }
+    }
+
+    function getID(ID) {
+      return document.getElementById(ID);
+    }
+
+    function style(id) {
+      return document.getElementById(id).style;
+    }
+
+
+    function priceSplit(price) {
+      if (typeof price !== 'undefined' && price !== '') {
+        return price.split(".")
+      } else {
+        return ['0', '00']
+      }
+    }
+
+    function thousandSeparator(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function setPageData(data) {
+      data.sale_price = priceSplit(data.sale_price);
+      if (data.tempo) {
+        style('price').fontFamily = style('price_decimal').fontFamily = style('price_eur').fontFamily = 'Harabara';
+        // style('price').right = data.price[0].length > 2 ? "54px" : "62px"
+        // style('price').width = "98px"
+      } else {
+        style('price').fontFamily = style('price_decimal').fontFamily = style('price_eur').fontFamily = 'Arial';
+        // style('price').right = data.price[0].length > 2 ? "48px" : "58px"
+        // style('price').width = "110px"
+      }
+
+      if (data.price[0].length > 2) {
+        getID("price_decimal").style.left = getID("price_eur").style.left = '130px';
+        getID("price").style.width = '128px';
+        getID("price_box").style.width = '180px';
+      } else {
+        getID("price_decimal").style.left = getID("price_eur").style.left = '95px';
+        getID("price").style.width = '93px';
+        getID("price_box").style.width = '145px';
+      }
+
+      getID('name').innerHTML = data.name;
+      getID('price').innerHTML = data.sale_price[0];
+      getID('price_decimal').innerHTML = data.sale_price[1];
+      if (data.unit_measure !== data.unit_price_unit_measure) {
+        style("price_eur").fontSize = "14px"
+        getID("price_eur").innerHTML = "€/" + data.unit_measure
+      } else {
+        style("price_eur").fontSize = "22px"
+        getID("price_eur").innerHTML = "EUR"
+      }
+      getID("unit_price").innerHTML =
+        "JC: " + data.unit_price + " €/" + data.unit_price_unit_measure;
+      getID('ean').innerHTML = data.ean;
+
+      getID('parameters').innerHTML = "";
+      appendParameter('Dodávateľ: ', data.supplier);
+      switch (data.typ_template) {
+        case "ovocie_zelenina":
+          appendParameter('Kr. pôvodu: ', data.place_of_origin);
+          appendParameter('Tr. kvality: ', data.grade);
+          appendParameter('Odroda: ', data.variety);
+          break;
+        case "cerstve_maso":
+        case "masove_vyrobky":
+        case "pecivo":
+          appendParameter(data.alergens, false);
+          appendParameter(data.description, false);
+          break;
+        case "zakusky":
+          appendParameter(data.alergens, false);
+          break;
+        case "salaty":
+        case "syry":
+        default:
+          // nezobrazujeme ziadne dodatocne parametre
+          break;
+      }
+
+      if (data.rp_price.length > 0) {
+        appendParameter("záloh za obal: " + data.rp_price + "€", false)
+      }
+
+      textFit(getID('name'), {
+        minFontSize: 10,
+        multiLine: true,
+        alignVert: true
+      });
+
+      return true;
+    }
+
+    // window.onload = function () {
+    //   setPageData({
+    //     _id: '64ef02108206246d847e742d',
+    //     sku: '39909',
+    //     store: 'DEFAULT_STORE_CODE',
+    //     ean: '8593893738201',
+    //     category: 'CUKRÍKY INÉ',
+    //     name: 'Želé Jojo kyslé dážďovky 80g',
+    //     price: '1.19',
+    //     unit_price: '14.875',
+    //     sale_price: '',
+    //     sale_unit_price: '0.000',
+    //     coop_card_price: '0.79',
+    //     coop_card_unit_price: '9.875',
+    //     unit_price_ratio: '0.080',
+    //     unit_measure: '100g',
+    //     unit_price_unit_measure: 'kg',
+    //     discount_percentage: '0.00',
+    //     package: '0.00',
+    //     supplier: 'LOGISTICKÉ CENTRUM STRED, a.s.',
+    //     description: '',
+    //     alergens: '',
+    //     action_type: '2303T',
+    //     pricelist_name: '',
+    //     price_valid_from: '15.08.2023 09:04',
+    //     price_valid_to: '30.09.2023 23:59',
+    //     valid: '1',
+    //     dual_price: '',
+    //     supplier_city: 'Krupina',
+    //     product_group: '32',
+    //     category_coop: '3.2.2.1.04',
+    //     manufacturer_number: '855',
+    //     manufacturer: 'Nestlé Slovensko s.r.o.',
+    //     manufacturer_city: 'Prievidza',
+    //     brand: 'A',
+    //     consumption_date: '',
+    //     rp_price: '123',
+    //     typ_template: 'akcia',
+    //     typ_action: 'akcia',
+    //     isPackaged: true,
+    //     template: '',
+    //     tempo: false,
+    //     createdAt: '2023-08-30T08:53:09.893Z',
+    //     updatedAt: '2023-08-30T08:53:09.901Z',
+    //     _data:
+    //       '{"sku":"39909","store":"DEFAULT_STORE_CODE","ean":"8593893738201","category":"CUKRÍKY INÉ","name":"Želé Jojo kyslé dážďovky 80g","price":"1.19","unit_price":"14.875","sale_price":"","sale_unit_price":"0.000","coop_card_price":"0.79","coop_card_unit_price":"9.875","unit_price_ratio":"0.080","unit_measure":"kg","unit_price_unit_measure":"kg","discount_percentage":"0.00","package":"0.00","supplier":"LOGISTICKÉ CENTRUM STRED, a.s.","description":"","alergens":"","action_type":"2303T","pricelist_name":"","price_valid_from":"15.08.2023 09:04","price_valid_to":"30.09.2023 23:59","valid":"1","dual_price":"","supplier_city":"Krupina","product_group":"32","category_coop":"3.2.2.1.04","manufacturer_number":"855","manufacturer":"Nestlé Slovensko s.r.o.","manufacturer_city":"Prievidza","brand":"A","consumption_date":"","rp_price":"","typ_template":"","typ_action":"karta","template":"","tempo":false,"createdAt":"2023-08-30T08:53:09.893Z","updatedAt":"2023-08-30T08:53:09.893Z"}'
+    //   })
+    // }
+  </script>
+</head>
+
+<body style="background: wheat">
+  <div id="tag" style="width: 360px; height: 184px; top: 0; left: 0; overflow: hidden; background-color: #fff">
+    <div id="name"></div>
+    <div id="sale">DOPREDAJ</div>
+    <div id="price_box">
+      <div id="price"></div>
+      <div id="price_decimal"></div>
+      <div id="price_eur"></div>
+    </div>
+    <div id="parameters_container">
+      <div id="parameters"></div>
+    </div>
+    <div id="ean"></div>
+    <div id="unit_price"></div>
+  </div>
+</body>
+
+</html>

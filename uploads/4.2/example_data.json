@@ -1,0 +1,23 @@
+{
+    "_id": "611123da6fdf3a86ec444244",
+    "sku": "03240",
+    "store": "6",
+    "name": "VEGAN BURGER 226g BEYOND",
+    "unit_price": 30.93,
+    "unit": "kg",
+    "place_of_origin": "US",
+    "name_of_origin": "Spojené štáty americké",
+    "price": 6.99,
+    "price_old": 8.49,
+    "discount_value": 17.7,
+    "description": "",
+    "brand": "BEYOND",
+    "spec": "",
+    "typ_template": "+AKCIA",
+    "date_begin": "2021-11-19",
+    "date_end": "2021-11-30",
+    "icon": "",
+    "category": "1",
+    "grade": "Trieda II.",
+    "ean": ["0850004207024", "1230000068109", "850004207024"]
+}

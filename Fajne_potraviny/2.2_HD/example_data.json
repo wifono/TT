@@ -1,0 +1,23 @@
+{
+    "_id": "611116ff6fdf3a86ec43adf1",
+    "sku": "I839",
+    "store": "2",
+    "name": "BIO GHEE 480g FINCK NATURKOST",
+    "unit_price": 36.44,
+    "unit": "kg",
+    "place_of_origin": "DE",
+    "name_of_origin": "Spolková republika Nemecko",
+    "price": 17.49,
+    "price_old": 17.49,
+    "discount_value": "",
+    "description": "",
+    "brand": "FINCK",
+    "spec": "Zloženie: 99,9% BIO maslový tuk zo 100% BIO masla. Alergén: MLIEKO",
+    "typ_template": "",
+    "date_begin": "",
+    "date_end": "",
+    "icon": "BIO",
+    "category": "35",
+    "grade": "Trieda II.",
+    "ean": ["4260042260107"]
+}
