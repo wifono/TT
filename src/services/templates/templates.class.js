@@ -7,12 +7,17 @@ export class TemplatesService {
   }
 
   async find(_params) {
-    const path = _params.query.path
-    console.log(path)
     try {
-      const items = await fs.readdir(path, { withFileTypes: true })
-      console.log(items)
-      return items
+      const path = _params.query.path
+      if (_params.query.path) {
+        const items = await fs.readdir(path, { withFileTypes: true })
+        if (_params.query.customer) {
+          const customer = _params.query.customer
+          const items = await fs.readdir(path + `\\` + customer, { withFileTypes: true })
+          return items
+        }
+        return items
+      }
     } catch (error) {
       console.error(error)
     }

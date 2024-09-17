@@ -1,5 +1,6 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
-
+import path from 'path'
+import fs from 'fs/promises'
 import { hooks as schemaHooks } from '@feathersjs/schema'
 import {
   templatesDataValidator,

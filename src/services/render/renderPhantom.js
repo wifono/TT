@@ -6,7 +6,6 @@ const singletonEnforcer = Symbol()
 const physicalCpuCount = amount
 
 const PHANTOM_INSTANCES = 1
-const TEMPLATE_PATH = 'C:/Users/nov/rend/templates'
 
 export class Phantom {
   constructor(enforcer) {
@@ -44,7 +43,6 @@ export class Phantom {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
 
-  // Vytvorenie nového browseru
   async init() {
     console.info('Renderer instances start')
     for (var i = 1; i <= this.instances; i++) {
@@ -70,6 +68,7 @@ export class Phantom {
 
     let temp = []
     let tempInUse = {}
+    console.log(opts)
 
     const settings = {
       top: 0,
@@ -82,7 +81,10 @@ export class Phantom {
       const phantomKey = `${opts._phantomKey}`
 
       for (let i = 0; i < this.instances; i++) {
-        const filePath = process.env.TEMPLATE_PATH + template + `/index.html`
+        const filePath =
+          process.env.TEMPLATE_PATH + `/` + opts.customer.label + `/` + template + `/index.html`
+        console.log(filePath)
+
         const pagePromise = this.browsers[i].createPage().then(async (page) => {
           await page.property('clipRect', settings)
           await page.property(
@@ -161,10 +163,11 @@ export class Phantom {
       const template = opts.template
       opts['_phantomKey'] = template + '_' + opts.width + 'x' + opts.height
       const phantomKey = opts._phantomKey
+      console.log('template', template)
 
       const page = await this.getTemplate(template, opts)
-
       const data = opts.article
+      console.log(data)
 
       await page.evaluate(function (args) {
         setPageData(args)

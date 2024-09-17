@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title></title>
+    <script src="textFit.js"></script>
+    <script src="qr.js"></script>
+    <style>
+      @font-face {
+        font-family: "Arial";
+        font-style: normal;
+        font-weight: 400;
+        src: url(./fonts/arial.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "Arial";
+        font-style: normal;
+        font-weight: 700;
+        src: url(./fonts/arialbd.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "modica";
+        font-style: normal;
+        font-weight: 700;
+        src: url(./fonts/modicam.otf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "modica";
+        font-style: bold;
+        font-weight: 900;
+        src: url(./fonts/modicat.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "eastman";
+        font-style: bold;
+        font-weight: 900;
+        src: url(./fonts/eastman.otf) format("truetype");
+      }
+
+      body {
+        font-family: "Arial";
+        -webkit-font-smoothing: none;
+        image-rendering: optimizeSpeed;
+        /* STOP SMOOTHING, GIVE ME SPEED  */
+        image-rendering: -webkit-optimize-contrast;
+        /* Chrome (and eventually Safari) */
+        image-rendering: optimize-contrast;
+        /* CSS3 Proposed                  */
+        margin: 0;
+        padding: 0;
+      }
+
+      div {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        z-index: 5;
+      }
+
+      #name {
+        top: 5px;
+        left: 10px;
+        height: 50px;
+        width: 180px;
+        font-weight: 900;
+        color: black;
+      }
+
+      #flag {
+        position: absolute;
+        top: 60px;
+        left: 10px;
+        padding-left: 2px;
+        padding-right: 2px;
+        font-size: 20px;
+        text-transform: uppercase;
+        color: white;
+        background-color: red;
+      }
+
+      #price {
+        bottom: 32px;
+        right: 5px;
+        font-size: 17px;
+        height: 27px;
+        width: 110px;
+        text-align: right;
+        overflow: hidden;
+        color: black;
+        font-family: "eastman";
+      }
+
+      #qr_code {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        left: 10px;
+        top: 115px;
+      }
+    </style>
+
+    <script>
+      function getID(ID) {
+        return document.getElementById(ID);
+      }
+
+      function hide(id) {
+        document.getElementById(id).style.display = "none";
+      }
+      function show(id) {
+        document.getElementById(id).style.display = "block";
+      }
+
+      function setQR(data) {
+        try {
+          show("qr_code");
+          getID("qr_code").src = toGif(quickresponse(data, "M", 1), 20);
+        } catch (e) {
+          hide("qr_code");
+        }
+      }
+
+      function setPageData(data) {
+        setQR(data.nfcUrl);
+        getID("name").innerHTML = data.name;
+
+        if (typeof data.flag === "") {
+          getID("flag").style.display = "none";
+          getID("flag").innerHTML = "";
+        } else {
+          getID("flag").style.display = "block";
+          getID("flag").innerHTML = data.flag;
+        }
+
+        if (data.currency === "EUR") {
+          currency = "€";
+        } else {
+          currency = data.currency;
+        }
+        getID("price").innerHTML = data.price + " " + currency;
+
+        textFit(document.getElementById("name"), {
+          minFontSize: 10,
+          maxFontSize: 30,
+          multiLine: true,
+        });
+
+        textFit(document.getElementById("price"), {
+          minFontSize: 10,
+          maxFontSize: 30,
+        });
+
+        return true;
+      }
+
+      window.onload = function () {
+        setPageData({
+          store: "1",
+          sku: "GOIO-G036182-M189759-49",
+          ean: "8586026310320",
+          name: "OiO by eyerim Pluto Lilac",
+          type: "Glasses",
+          nfcUrl: "https://eyerim.sk/oio-by-eyerim-pluto-lilac/",
+          currency: "CZE",
+          id: "358167",
+          price: "55130.00",
+          rrpPrice: "30.00",
+          discountPercentage: "",
+          flag: "Novinka",
+          template: "",
+        });
+      };
+    </script>
+  </head>
+
+  <body style="background: wheat">
+    <div
+      style="
+        width: 200px;
+        height: 200px;
+        top: 0px;
+        left: 0px;
+        overflow: hidden;
+        background-color: white;
+      "
+    >
+      <div id="name"></div>
+      <div id="flag"></div>
+      <div id="price"></div>
+      <img id="qr_code" />
+    </div>
+  </body>
+</html>

@@ -9,7 +9,8 @@ export const templatesSchema = {
   additionalProperties: false,
   required: [],
   properties: {
-    path: { type: 'string' }
+    path: { type: 'string' },
+    customer: { type: 'string' }
   }
 }
 export const templatesValidator = getValidator(templatesSchema, dataValidator)
