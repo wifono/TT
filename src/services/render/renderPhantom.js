@@ -68,7 +68,6 @@ export class Phantom {
 
     let temp = []
     let tempInUse = {}
-    console.log(opts)
 
     const settings = {
       top: 0,
@@ -81,9 +80,7 @@ export class Phantom {
       const phantomKey = `${opts._phantomKey}`
 
       for (let i = 0; i < this.instances; i++) {
-        const filePath =
-          process.env.TEMPLATE_PATH + `/` + opts.customer.label + `/` + template + `/index.html`
-        console.log(filePath)
+        const filePath = `uploads/` + template + `/index.html`
 
         const pagePromise = this.browsers[i].createPage().then(async (page) => {
           await page.property('clipRect', settings)
@@ -163,11 +160,9 @@ export class Phantom {
       const template = opts.template
       opts['_phantomKey'] = template + '_' + opts.width + 'x' + opts.height
       const phantomKey = opts._phantomKey
-      console.log('template', template)
 
       const page = await this.getTemplate(template, opts)
       const data = opts.article
-      console.log(data)
 
       await page.evaluate(function (args) {
         setPageData(args)

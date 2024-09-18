@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title></title>
+    <script src="textFit.js"></script>
+    <script
+      src="JsBarcode.code128.min.js"
+      type="text/javascript"
+      charset="utf-8"
+    ></script>
+    <style>
+      @font-face {
+        font-family: "Arial";
+        font-style: normal;
+        font-weight: 400;
+        src: url(./fonts/arial.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "Arial";
+        font-style: normal;
+        font-weight: 700;
+        src: url(./fonts/arialbd.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "notoSans";
+        font-style: normal;
+        font-weight: 700;
+        src: url(./fonts/NotoSans-Medium.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "notoSans";
+        font-style: bold;
+        font-weight: 900;
+        src: url(./fonts/NotoSans-Black.ttf) format("truetype");
+      }
+
+      @font-face {
+        font-family: "eastman";
+        font-style: bold;
+        font-weight: 900;
+        src: url(./fonts/eastman.otf) format("truetype");
+      }
+
+      body {
+        font-family: "Arial";
+        -webkit-font-smoothing: none;
+        image-rendering: optimizeSpeed;
+        /* STOP SMOOTHING, GIVE ME SPEED  */
+        image-rendering: -webkit-optimize-contrast;
+        /* Chrome (and eventually Safari) */
+        image-rendering: optimize-contrast;
+        /* CSS3 Proposed                  */
+        margin: 0;
+        padding: 0;
+      }
+
+      div {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        z-index: 5;
+      }
+
+      #name {
+        top: 5px;
+        left: 10px;
+        width: 380px;
+        height: 65px;
+        font-weight: 900;
+        font-family: "notoSans";
+      }
+
+      #description {
+        top: 70px;
+        left: 10px;
+        width: 380px;
+        height: 67px;
+        overflow: hidden;
+        font-weight: 400;
+        font-family: "notoSans";
+        color: black;
+        font-size: 13px;
+      }
+
+      #price_container {
+        width: 373px;
+        height: 60px;
+        bottom: 70px;
+        left: 10px;
+        font-weight: 700;
+        background-color: black;
+        border-radius: 5px;
+      }
+
+      #barcode_container {
+        width: 400px;
+        height: 75px;
+        bottom: 20px;
+        right: 0px;
+        font-weight: 700;
+        background-color: white;
+      }
+
+      #action_label {
+        left: 5px;
+        top: 5px;
+        font-size: 18px;
+      }
+
+      #price {
+        top: 0px;
+        left: 10px;
+        font-size: 33px;
+        width: 300px;
+        text-align: left;
+        overflow: hidden;
+        color: white;
+        font-weight: 900;
+        font-family: "notoSans";
+      }
+
+      #discount {
+        top: 239px;
+        left: 10px;
+        font-size: 30px;
+        width: 90px;
+        height: 51px;
+        background-color: red;
+        text-align: center;
+        overflow: hidden;
+        color: white;
+        line-height: 170%;
+        border-radius: 7px;
+        font-weight: 900;
+        font-family: "notoSans";
+        z-index: 115;
+      }
+
+      #sku {
+        bottom: 135px;
+        left: 10px;
+        font-size: 22px;
+      }
+
+      #code {
+        bottom: 2px;
+        left: 2px;
+        font-size: 13px;
+      }
+
+      #original_price {
+        font-weight: normal;
+        font-size: 20px;
+        top: 4px;
+        left: 10px;
+        width: 220px;
+        color: #fff;
+        text-decoration: line-through;
+        text-align: left;
+      }
+
+      #price_30days {
+        font-weight: normal;
+        font-size: 10px;
+        bottom: 1px;
+        left: 5px;
+      }
+
+      #dude {
+        position: absolute;
+        width: 100px;
+        height: 110px;
+        bottom: 70px;
+        right: 10px;
+        overflow: hidden;
+        z-index: 115;
+      }
+
+      #corner {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+
+        overflow: hidden;
+      }
+
+      .barcode {
+        top: 5px;
+        left: 10px;
+        width: 280px;
+        height: 77px;
+        background-color: #fff;
+      }
+
+      #br {
+        position: relative;
+        top: 5px;
+        left: 0px;
+        width: 175px;
+        height: 100px;
+      }
+    </style>
+
+    <script>
+      function getID(ID) {
+        return document.getElementById(ID);
+      }
+
+      function thousandSeparator(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      }
+
+      function setPageData(data) {
+        getID("name").innerHTML = data.name + " " + data.brand;
+        getID("original_price").innerHTML = data.original_price;
+        getID("sku").innerHTML = data.sku;
+        getID("description").innerHTML = data.description;
+        getID("discount").innerHTML = data.discount;
+        getID("price").innerHTML = thousandSeparator(data.price);
+
+        if (data.template === "akce") {
+          getID("discount").style.display = "block";
+          getID("original_price").style.display = "block";
+
+          getID("br").style.width = "286px";
+          getID("br").style.left = "95px";
+
+          getID("price").style.top = "15px";
+          getID("price").style.width = "270px";
+          getID("price").style.height = "40px";
+
+          JsBarcode("#br", data.ean, {
+            height: 155,
+            width: 7,
+            displayValue: false,
+            background: "none",
+          });
+        } else {
+          getID("discount").style.display = "none";
+          getID("original_price").style.display = "none";
+
+          getID("br").style.width = "386px";
+          getID("br").style.left = "-4px";
+
+          getID("price").style.top = "2px";
+          getID("price").style.width = "250px";
+          getID("price").style.height = "70px";
+
+          JsBarcode("#br", data.ean, {
+            height: 125,
+            width: 7,
+            displayValue: false,
+            background: "none",
+          });
+        }
+
+        textFit(document.getElementById("name"), {
+          minFontSize: 10,
+          maxFontSize: 50,
+          multiLine: true,
+        });
+
+        textFit(document.getElementById("price"), {
+          minFontSize: 10,
+          maxFontSize: 50,
+        });
+
+        textFit(document.getElementById("description"), {
+          minFontSize: 10,
+          maxFontSize: 50,
+          multiLine: true,
+        });
+
+        return true;
+      }
+    </script>
+  </head>
+
+  <body style="background: wheat">
+    <div
+      style="
+        width: 400px;
+        height: 300px;
+        top: 0px;
+        left: 0px;
+        overflow: hidden;
+        background-color: white;
+      "
+    >
+      <div id="name"></div>
+      <div id="description"></div>
+      <div id="sku"></div>
+      <div id="barcode_container">
+        <div class="barcode">
+          <svg style="left: 3px; position: relative" id="br"></svg>
+        </div>
+      </div>
+
+      <div id="price_container">
+        <div id="action_label"></div>
+        <div id="original_price"></div>
+        <div id="price"></div>
+        <div id="price_decimal"></div>
+      </div>
+
+      <div id="code"></div>
+      <img id="dude" src="pictures/dude.png" />
+
+      <div id="discount"></div>
+    </div>
+  </body>
+</html>

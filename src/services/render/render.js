@@ -23,9 +23,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-const TEMPLATE_PATH = process.env.TEMPLATE_PATH
 const PhantomRenderer = Phantom.instance
-console.log(TEMPLATE_PATH)
 await PhantomRenderer.init()
 
 export const render = (app) => {
@@ -45,33 +43,21 @@ export const render = (app) => {
 
   app.post('/upload-template', upload.single('file'), async (req, res) => {
     try {
+      console.log('Receiving file...')
       const templateFile = req.file
-      console.log(templateFile)
 
       if (!templateFile) {
         throw new Error('No template file uploaded')
       }
 
-      // Clear the uploads directory
-      try {
-        const files = fs.readdir('uploads')
-        for (const file of files) {
-          const filePath = path.join('uploads', file)
-          console.log(filePath)
-
-          fs.rm(filePath, { recursive: true, force: true })
-        }
-      } catch (err) {
-        console.error('Error clearing uploads directory:', err)
-        throw new Error('Error clearing uploads directory')
-      }
-
       const extractedPath = path.join('uploads')
+      console.log('Extracting file to:', extractedPath)
 
       await fs
         .createReadStream(templateFile.path)
         .pipe(unzip.Extract({ path: extractedPath }))
         .promise()
+
       console.log('File extracted successfully to:', extractedPath)
 
       fs.unlink(templateFile.path, (err) => {
@@ -82,7 +68,7 @@ export const render = (app) => {
         }
       })
 
-      res.send('File uploaded and extracted successfully.')
+      res.send({ filename: templateFile.originalname })
     } catch (error) {
       console.error('Error processing form data:', error)
       res.status(500).send('Error processing form data')
@@ -100,7 +86,6 @@ export const render = (app) => {
         height: req.body.size.height
       }
       const imageBuffer = await PhantomRenderer.renderImage(opts)
-      console.log(imageBuffer)
       if (!Buffer.isBuffer(imageBuffer)) {
         throw new Error('imageBuffer is not a buffer object')
       }
