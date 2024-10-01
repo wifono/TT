@@ -85,6 +85,9 @@ export const render = (app) => {
         width: req.body.size.width,
         height: req.body.size.height
       }
+
+      console.log(opts)
+
       const imageBuffer = await PhantomRenderer.renderImage(opts)
       if (!Buffer.isBuffer(imageBuffer)) {
         throw new Error('imageBuffer is not a buffer object')
