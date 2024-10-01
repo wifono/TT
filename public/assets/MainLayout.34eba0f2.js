@@ -21,8 +21,8 @@ import {
   t as D,
   u as $,
   v as x
-} from './index.dac22646.js'
-import { Q as G, a as _ } from './QResizeObserver.a585e035.js'
+} from './index.83ad8fb0.js'
+import { Q as G, a as _ } from './QResizeObserver.b6230316.js'
 var J = R({
     name: 'QPageContainer',
     setup(t, { slots: v }) {

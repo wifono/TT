@@ -5893,21 +5893,21 @@ const Od = [
     path: '/',
     component: () =>
       Hn(
-        () => import('./MainLayout.569a0711.js'),
-        ['assets/MainLayout.569a0711.js', 'assets/QResizeObserver.a585e035.js']
+        () => import('./MainLayout.34eba0f2.js'),
+        ['assets/MainLayout.34eba0f2.js', 'assets/QResizeObserver.b6230316.js']
       ),
     children: [
       {
         path: '',
         component: () =>
           Hn(
-            () => import('./IndexPage.435a1a8d.js'),
-            ['assets/IndexPage.435a1a8d.js', 'assets/QResizeObserver.a585e035.js', 'assets/axios.bf56c3c5.js']
+            () => import('./IndexPage.339c2f0c.js'),
+            ['assets/IndexPage.339c2f0c.js', 'assets/QResizeObserver.b6230316.js', 'assets/axios.bf56c3c5.js']
           )
       }
     ]
   },
-  { path: '/:catchAll(.*)*', component: () => Hn(() => import('./ErrorNotFound.f9ccd914.js'), []) }
+  { path: '/:catchAll(.*)*', component: () => Hn(() => import('./ErrorNotFound.4a3f91b4.js'), []) }
 ]
 var Ir = function () {
   return kd({ scrollBehavior: () => ({ left: 0, top: 0 }), routes: Od, history: od('/') })
@@ -7510,7 +7510,7 @@ $d(Al, Rh).then((e) => {
         ]
       : ['all', (r) => r.map((o) => o.default)]
   return Promise[t]([
-    Hn(() => import('./axios.3e20d827.js'), ['assets/axios.3e20d827.js', 'assets/axios.bf56c3c5.js'])
+    Hn(() => import('./axios.235c811e.js'), ['assets/axios.235c811e.js', 'assets/axios.bf56c3c5.js'])
   ]).then((r) => {
     const o = n(r).filter((s) => typeof s == 'function')
     Lh(e, o)
