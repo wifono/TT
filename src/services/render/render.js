@@ -41,17 +41,33 @@ export const render = (app) => {
     'Content-Disposition': 'inline; filename="image.png"'
   }
 
-  app.post('/upload-template', upload.single('file'), async (req, res) => {
+  function cleanTempType(tempType) {
+    return tempType.replace(/\s*\(.*?\)\s*/g, '').trim()
+  }
+
+  app.post('/upload-template', upload.single('template'), async (req, res) => {
     try {
       console.log('Receiving file...')
       const templateFile = req.file
+      const tempType = req.body.tempType
 
       if (!templateFile) {
         throw new Error('No template file uploaded')
       }
 
-      const extractedPath = path.join('uploads')
+      if (!tempType) {
+        throw new Error('tempType not provided')
+      }
+
+      const cleanedTempType = cleanTempType(tempType)
+
+      const extractedPath = path.join('uploads', cleanedTempType)
       console.log('Extracting file to:', extractedPath)
+
+      if (!fs.existsSync(extractedPath)) {
+        await fs.promises.mkdir(extractedPath, { recursive: true, mode: 0o755 })
+        console.log('Directory created:', extractedPath)
+      }
 
       await fs
         .createReadStream(templateFile.path)
@@ -68,7 +84,7 @@ export const render = (app) => {
         }
       })
 
-      res.send({ filename: templateFile.originalname })
+      res.send({ filename: templateFile.originalname, extractedPath })
     } catch (error) {
       console.error('Error processing form data:', error)
       res.status(500).send('Error processing form data')
