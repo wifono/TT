@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title></title>
+  <script src="textFit.js"></script>
+  <style>
+    @font-face {
+      font-family: "Arial";
+      font-style: normal;
+      font-weight: 400;
+      src: url(./fonts/arial.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Arial";
+      font-style: normal;
+      font-weight: 700;
+      src: url(./fonts/arialbd.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Harabara";
+      font-style: normal;
+      font-weight: 400;
+      src: url(./fonts/HarabaraCE.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Harabara";
+      font-style: normal;
+      font-weight: 700;
+      src: url(./fonts/HarabaraCE.ttf) format("truetype");
+    }
+
+    body {
+      font-family: "Arial";
+      -webkit-font-smoothing: none;
+      image-rendering: optimizeSpeed;
+      /* STOP SMOOTHING, GIVE ME SPEED  */
+      image-rendering: -webkit-optimize-contrast;
+      /* Chrome (and eventually Safari) */
+      image-rendering: optimize-contrast;
+      /* CSS3 Proposed                  */
+      margin: 0;
+      padding: 0;
+    }
+
+    div {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      z-index: 5;
+    }
+
+    #name {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+
+      /* Size  */
+      width: 390px;
+      height: 82px;
+
+      font-weight: 700;
+      overflow-wrap: break-word;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    #price_box {
+      position: absolute;
+      top: 95px;
+      right: 0px;
+      background: red;
+      color: white;
+
+      /* Size  */
+      width: 230px;
+      height: 112px;
+    }
+
+    #price {
+      position: absolute;
+      top: -4px;
+      left: 0px;
+
+      width: 178px;
+      height: 120px;
+
+      font-size: 116px;
+      font-weight: 700;
+      line-height: 120px;
+      text-align: right;
+      overflow: hidden;
+    }
+
+    #price_decimal {
+      position: absolute;
+      bottom: 45px;
+      left: 185px;
+
+      font-size: 60px;
+      font-weight: 700;
+      line-height: 100%;
+      text-align: right;
+    }
+
+    #price_eur {
+      position: absolute;
+      bottom: 14px;
+      left: 185px;
+
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 100%;
+      text-align: right;
+    }
+
+    #ean {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+
+      width: 140px;
+      height: 18px;
+
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    #unit_price {
+      position: absolute;
+      bottom: 22px;
+      right: 4px;
+
+      width: 140px;
+      height: 18px;
+
+      font-weight: 700;
+      text-align: right;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    #parameters_container {
+      bottom: 3px;
+      left: 3px;
+      overflow: hidden;
+      width: 280px;
+      height: 92px;
+    }
+
+    #parameters {
+      position: absolute;
+      font-size: 12px;
+      line-height: 15px;
+      width: 280px;
+      bottom: 0px;
+      left: 0px;
+      /* white-space: nowrap; */
+    }
+
+    #sale {
+      position: absolute;
+      top: 95px;
+      left: 15px;
+      width: 100px;
+      padding: 3px 0 3px 0;
+      /* height: 34px; */
+      /* line-height: 34px; */
+
+      font-size: 26px;
+      font-weight: 700;
+      text-align: center;
+      color: #fff;
+
+      background-color: #ff0000;
+    }
+
+    #sale:before {
+      content: "";
+      position: absolute;
+      top: 0px;
+      left: -10px;
+      width: 10px;
+      height: 100%;
+      background: inherit;
+      border-radius: 30% 0 0 30%;
+    }
+
+    #sale:after {
+      content: "";
+      position: absolute;
+      top: 0px;
+      right: -5px;
+      width: 10px;
+      height: 100%;
+      background: inherit;
+      border-radius: 0 30% 30% 0;
+    }
+
+    #price_box_card {
+      position: absolute;
+      top: 90px;
+      right: 2px;
+
+      width: 390px;
+      height: 146px;
+    }
+
+    #price_30days {
+      text-decoration: line-through;
+      font-weight: normal;
+    }
+  </style>
+  <script>
+    function appendParameter(label, param) {
+      if (
+        typeof param !== "undefined" &&
+        param != "" &&
+        typeof param !== "undefined"
+      ) {
+        var tempElement;
+        var tempBr = document.createElement("br");
+
+        if (label.length) {
+          tempElement = document.createElement("span");
+          tempElement.style.fontWeight = "bold";
+          tempElement.innerHTML = label;
+          getID("parameters").appendChild(tempElement);
+        }
+        tempElement = document.createElement("span");
+        tempElement.innerHTML = param;
+        getID("parameters").appendChild(tempElement);
+        getID("parameters").appendChild(tempBr);
+      } else if (param === false && label.length) {
+        var tempElement = document.createElement("span");
+        tempElement.innerHTML = label;
+        getID("parameters").appendChild(tempElement);
+        getID("parameters").appendChild(document.createElement("br"));
+      }
+    }
+
+    function getID(ID) {
+      return document.getElementById(ID);
+    }
+
+    function style(id) {
+      return document.getElementById(id).style;
+    }
+
+    function priceSplit(price) {
+      if (typeof price !== "undefined" && price !== "") {
+        return price.split(".");
+      } else {
+        return ["0", "00"];
+      }
+    }
+    function thousandSeparator(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function setPageData(data) {
+      // zmazat po nasadení interface
+      if (typeof data.zlava_na_kartu === "undefined") {
+        data.mnozstvo_zvyhodnene = "0";
+        data.zlava_na_kartu = true;
+        data.mnozstvo_nasobky = false;
+      }
+      // **********************
+      getID("ean").innerHTML = data.ean;
+      getID("name").innerHTML = data.name;
+      style("parameters_container").height = "92px";
+
+      if (data.typ_action === "karta") {
+        data.coop_card_price = priceSplit(data.coop_card_price)
+        data.price = priceSplit(data.price)
+        style("price_box").display = "none";
+        style("sale").display = "none";
+        style("price_box_card").display = "block";
+
+        style("parameters_container").width = "175px"
+        style("parameters").width = "175px"
+
+        style("parameters_container").borderTop = "solid black 1px"
+        style("parameters_container").width = "179px"
+        style("parameters_container").left = "-1px"
+        style("parameters").left = "5px"
+
+        if (data.zlava_na_kartu || data.mnozstvo_zvyhodnene === "0") {
+          // povodny layout
+          style("red_text").fontSize = "11px";
+          getID("red_text").innerHTML =
+            "Cena pre držiteľov nákupnej karty COOP Jednota:";
+          getID("plain_text").innerHTML = "Cena:";
+        } else if (data.mnozstvo_nasobky) {
+          style("red_text").fontSize = "13px";
+          getID("red_text").innerHTML =
+            "Cena za násobky " + data.mnozstvo_zvyhodnene + " kusov:";
+          getID("plain_text").innerHTML = "Cena za 1 kus:";
+        } else {
+          style("red_text").fontSize = "14px";
+          getID("red_text").innerHTML =
+            "Cena od " + data.mnozstvo_zvyhodnene + " kusov:";
+          getID("plain_text").innerHTML = "Cena za 1 kus:";
+        }
+
+        if (data.unit_measure !== data.unit_price_unit_measure) {
+          style("base_price_label").position = "absolute";
+          style("base_price_label").top = "44px";
+          style("base_price_label").right = "26px";
+          style("base_price_label").fontSize = "20px";
+          getID("base_price_label").innerHTML = "€/" + data.unit_measure;
+          getID("coop_price_label").innerHTML = "€/" + data.unit_measure;
+          style("coop_price_label").position = "absolute";
+          style("coop_price_label").fontSize = "19px"
+          style("coop_price_label").bottom = "18px";
+          style("coop_price_label").right = "0px"
+        } else {
+          style("base_price_label").fontSize = "20px";
+          style("base_price_label").position = "absolute";
+          style("base_price_label").top = "45px";
+          style("base_price_label").right = "47px"
+          getID("base_price_label").innerHTML = "EUR";
+          style("coop_price_label").fontSize = "21px";
+          style("coop_price_label").position = "absolute";
+          style("coop_price_label").bottom = "18px";
+          style("coop_price_label").right = "9px"
+          getID("coop_price_label").innerHTML = "EUR";
+        }
+
+        getID("unit_price").innerHTML = "";
+        getID("base_price_value").innerHTML = data.price[0];
+        getID("base_price_decimal").innerHTML = data.price[1];
+        getID("base_unit_price").innerHTML =
+          "JC:" + data.unit_price + " €/" + data.unit_measure;
+        getID("coop_price_value").innerHTML = data.coop_card_price[0];
+        getID("coop_price_decimal").innerHTML = data.coop_card_price[1];
+        getID("coop_unit_price").innerHTML =
+          "JC:" +
+          data.coop_card_unit_price +
+          " €/" +
+          data.unit_price_unit_measure;
+        style("parameters_container").height = "110px";
+      } else {
+        style("price_box").display = "block";
+        style("price_box_card").display = "none";
+        style("parameters_container").width = "275px"
+        style("parameters").width = "275px"
+        style("parameters_container").borderTop = "none"
+
+        data.price = priceSplit(data.price);
+
+        getID("price").innerHTML = data.price[0];
+        getID("price_decimal").innerHTML = data.price[1];
+        if (data.unit_measure !== data.unit_price_unit_measure) {
+          style("price_eur").fontSize = "22px";
+          getID("price_eur").innerHTML = "€/" + data.unit_measure;
+        } else {
+          style("price_eur").fontSize = "34px";
+          getID("price_eur").innerHTML = "EUR";
+        }
+        getID("unit_price").innerHTML =
+          "JC: " + data.unit_price + " €/" + data.unit_price_unit_measure;
+
+        switch (data.typ_action) {
+          case "akcia":
+            style("price_box").background = "red";
+            style("price_box").color = "white";
+            style("sale").display = "block";
+            style("sale").background = "red";
+            style("sale").color = "white";
+            style("sale").fontSize = "18px";
+            getID("sale").innerHTML = "AKCIA";
+            style("name").color = "black";
+            break;
+          case "dnc":
+            style("price_box").background = "white";
+            style("price_box").color = "red";
+            style("sale").display = "block";
+            style("sale").background = "black";
+            style("sale").color = "white";
+            style("sale").fontSize = "18px";
+            getID("sale").innerHTML = "DNC";
+            style("name").color = "black";
+            break;
+          case "vlastna_znacka":
+            style("price_box").background = "white";
+            style("price_box").color = "black";
+            style("sale").display = "block";
+            style("sale").background = "red";
+            style("sale").color = "white";
+            style("sale").fontSize = "14px";
+            getID("sale").innerHTML = "VLASTNÁ ZNAČKA";
+            style("name").color = "red";
+            break;
+          default:
+            style("price_box").background = "white";
+            style("price_box").color = "black";
+            style("sale").display = "none";
+            style("name").color = "black";
+            break;
+        }
+
+        if (data.price[0].length > 2) {
+          style("price_decimal").left = style("price_eur").left = "145px";
+          style("price").width = "142px";
+          style("price").fontSize = "96px";
+          style("price_decimal").fontSize = "50px";
+          // style("price_eur").fontSize = '32px';
+        } else {
+          style("price_decimal").left = style("price_eur").left = "145px";
+          style("price").width = "142px";
+          style("price").fontSize = "118px";
+          style("price_decimal").fontSize = "60px";
+          // style("price_eur").fontSize = '38px';
+        }
+      }
+
+      getID("parameters").innerHTML = "";
+      appendParameter("Dodávateľ: ", data.supplier);
+      switch (data.typ_template) {
+        case "ovocie_zelenina":
+          appendParameter("Kr. pôvodu: ", data.place_of_origin);
+          appendParameter("Tr. kvality: ", data.grade);
+          appendParameter("Odroda: ", data.variety);
+          break;
+        case "cerstve_maso":
+        case "masove_vyrobky":
+        case "pecivo":
+          appendParameter(data.alergens, false);
+          appendParameter(data.description, false);
+          break;
+        case "zakusky":
+          appendParameter(data.alergens, false);
+          break;
+        case "salaty":
+        case "syry":
+        default:
+          // nezobrazujeme ziadne dodatocne parametre
+          break;
+      }
+
+      if (data.isPackaged) {
+        appendParameter("Dátum rozbalenia: ", data.open_date);
+        appendParameter("Spotrebujte do: ", data.expiration_date);
+      }
+
+      if (data.rp_price.length > 0) {
+        appendParameter("záloh za obal: " + data.rp_price + "€", false);
+      }
+
+      style("price").fontFamily =
+        style("price_decimal").fontFamily =
+        style("price_eur").fontFamily =
+        data.tempo ? "Harabara" : "Arial";
+
+      textFit(getID("name"), {
+        minFontSize: 10,
+        multiLine: true,
+        alignVert: true,
+      });
+
+      if (typeof data.price_30days !== "undefined" && data.price_30days !== "") {
+        appendParameter("", "Najnižšia cena za 30 dní:" + data.price_30days + " €" );
+      }
+      
+      return true;
+    }
+
+    //  window.onload = function () {
+    //     setPageData({
+    //       _id: "6617e55758ec78560493e737",
+    //       sku: "64544",
+    //       store: "DEFAULT_STORE_CODE",
+    //       ean: "8720182085139",
+    //       category: "MAJONÉZA",
+    //       name: "Majonéza Hellmann's 405ml",
+    //       price: "1.25",
+    //       price_30days: "9.99",
+    //       unit_price: "12.321",
+    //       sale_price: "",
+    //       sale_unit_price: "0.000",
+    //       coop_card_price: "1.25",
+    //       coop_card_unit_price: "4.914",
+    //       unit_price_ratio: "0.405",
+    //       unit_measure: "100g",
+    //       unit_price_unit_measure: "1kg",
+    //       mnozstvo_zvyhodnene: "0",
+    //       mnozstvo_nasobky: true,
+    //       zlava_na_kartu: false,
+    //       discount_percentage: "0.00",
+    //       package: "0.00",
+    //       supplier: "LOGISTICKÉ CENTRUM STRED, a.s.",
+    //       description: "",
+    //       grade: "A",
+    //       alergens: "1, 7, 8",
+    //       action_type: "2304T",
+    //       pricelist_name: "",
+    //       price_valid_from: "02.04.2024 15:18",
+    //       price_valid_to: "",
+    //       valid: "1",
+    //       dual_price: "",
+    //       supplier_city: "Krupina",
+    //       product_group: "12",
+    //       category_coop: "1.2.4.5.01",
+    //       manufacturer_number: "1064",
+    //       manufacturer: "Unilever Slovensko, spol. s r.o.",
+    //       manufacturer_city: "Bratislava 1",
+    //       brand: "C",
+    //       consumption_date: "1.8.2023",
+    //       open_date: "1.7.2024",
+    //       expiration_date: "20.9.2024",
+    //       place_of_origin: "Nitra",
+    //       rp_price: "0.15",
+    //       typ_template: "syry",
+    //       typ_action: "karta",
+    //       isPackaged: true,
+    //       template: "default",
+    //       tempo: false,
+    //       _data:
+    //         '{"sku":"64544","store":"DEFAULT_STORE_CODE","ean":"8720182085139","category":"MAJONÉZA","name":"Majonéza Hellmann\'s 405ml","price":"4.99","unit_price":"12.321","sale_price":"","sale_unit_price":"0.000","coop_card_price":"1.99","coop_card_unit_price":"4.914","unit_price_ratio":"0.405","unit_measure":"l","unit_price_unit_measure":"l","mnozstvo_zvyhodnene":"3","mnozstvo_nasobky":false,"zlava_na_kartu":false,"discount_percentage":"0.00","package":"0.00","supplier":"LOGISTICKÉ CENTRUM STRED, a.s.","description":"","grade":"","alergens":"","action_type":"2304T","pricelist_name":"","price_valid_from":"02.04.2024 15:18","price_valid_to":"","valid":"1","dual_price":"","supplier_city":"Krupina","product_group":"12","category_coop":"1.2.4.5.01","manufacturer_number":"1064","manufacturer":"Unilever Slovensko, spol. s r.o.","manufacturer_city":"Bratislava 1","brand":"C","consumption_date":"","rp_price":"","typ_template":"","typ_action":"karta","isPackaged":false,"template":"default","tempo":false}',
+    //       createdAt: "2024-04-11T13:27:51.455Z",
+    //       updatedAt: "2024-04-11T13:27:51.455Z",
+    //     });
+    //   };
+  </script>
+</head>
+
+<body style="background: wheat">
+  <div id="tag" style="
+        width: 400px;
+        height: 300px;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        background-color: #fff;
+      ">
+    <div id="name"></div>
+    <div id="sale">AKCIA</div>
+    <div id="price_box_card">
+      <div id="box_left" style="
+            left: 0;
+            top: 0px;
+            width: 174px;
+            height: 65%;
+            text-align: center;
+            overflow: hidden;
+          ">
+        <div id="plain_text" style="
+              top: 0;
+              left: 0;
+              font-size: 16px;
+              font-weight: bold;
+              text-align: left;
+              width: 95%;
+            ">
+          Cena:
+        </div>
+        <div id="base_price" style="top: 10px; font-weight: bold; width: 100%; height: 90px;">
+          <div id="base_price_value" style="font-size: 65px; right:90px; top: 2px; "></div>
+          <div id="base_price_decimal" style="font-size: 37px; right: 48px; top: 8px;"></div>
+          <span id="base_price_label" style="font-size: 48px"></span>
+        </div>
+        <div id="base_unit_price" style="bottom: 0px; width: 100%; font-size: 14px; text-align: center  ; bottom: 0 ;">
+        </div>
+      </div>
+      <div id="box_right" style="
+            right: -2px;
+            bottom: 0;
+            width: 222px;
+            height: 100%;
+            background: red;
+            overflow: hidden;
+            color: white;
+          ">
+        <div id="red_text" style="
+              top: 4px;
+              left: 4px;
+              font-size: 14px;
+              font-weight: bold;
+              text-align: left;
+              width: 98%;
+            ">
+          Cena pre držiteľov nákupnej karty COOP Jednota:
+        </div>
+        <div id="coop_price" style="
+              bottom: 20px;
+              right: 4px;
+              font-weight: bold;
+              text-align: right;
+              width: 100%;
+            ">
+          <div id="coop_price_value" style="font-size: 75px; right: 60px; bottom: 6px;"></div>
+          <div id="coop_price_decimal" style="font-size: 45px; right: 7px; bottom: 33px;"></div>
+          <span id="coop_price_label" style="font-size: 68px"></span>
+        </div>
+        <div id="coop_unit_price" style="bottom: 4px; left: 4px; font-size: 14px; text-align: right"></div>
+      </div>
+    </div>
+    <div id="price_box">
+      <div id="price"></div>
+      <div id="price_decimal"></div>
+      <div id="price_eur"></div>
+    </div>
+    <div id="parameters_container">
+      <div id="parameters"></div>
+    </div>
+    <div id="ean"></div>
+    <div id="unit_price"></div>
+  </div>
+</body>
+
+</html>
