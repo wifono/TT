@@ -60,7 +60,7 @@ export const render = (app) => {
       }
 
       const cleanedTempType = cleanTempType(tempType)
-      const extractedPath = path.join('uploads', cleanedTempType)
+      const extractedPath = path.join('uploads/', cleanedTempType)
       console.log('Extracting file to:', extractedPath)
 
       // Zisti, či priečinok existuje
@@ -112,8 +112,6 @@ export const render = (app) => {
         width: req.body.size.width,
         height: req.body.size.height
       }
-
-      console.log(opts)
 
       const imageBuffer = await PhantomRenderer.renderImage(opts)
       if (!Buffer.isBuffer(imageBuffer)) {
