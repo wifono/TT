@@ -1,610 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title></title>
-  <script src="textFit.js"></script>
-  <style>
-    @font-face {
-      font-family: "Arial";
-      font-style: normal;
-      font-weight: 400;
-      src: url(./fonts/arial.ttf) format("truetype");
-    }
-
-    @font-face {
-      font-family: "Arial";
-      font-style: normal;
-      font-weight: 700;
-      src: url(./fonts/arialbd.ttf) format("truetype");
-    }
-
-    @font-face {
-      font-family: "Harabara";
-      font-style: normal;
-      font-weight: 400;
-      src: url(./fonts/HarabaraCE.ttf) format("truetype");
-    }
-
-    @font-face {
-      font-family: "Harabara";
-      font-style: normal;
-      font-weight: 700;
-      src: url(./fonts/HarabaraCE.ttf) format("truetype");
-    }
-
-    body {
-      font-family: "Arial";
-      -webkit-font-smoothing: none;
-      image-rendering: optimizeSpeed;
-      /* STOP SMOOTHING, GIVE ME SPEED  */
-      image-rendering: -webkit-optimize-contrast;
-      /* Chrome (and eventually Safari) */
-      image-rendering: optimize-contrast;
-      /* CSS3 Proposed                  */
-      margin: 0;
-      padding: 0;
-    }
-
-    div {
-      position: absolute;
-      margin: 0;
-      padding: 0;
-      z-index: 5;
-    }
-
-    #name {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-
-      /* Size  */
-      width: 98%;
-      height: 52px;
-      font-weight: 700;
-      overflow: hidden;
-      text-align: left;
-    }
-
-    #price_box {
-      position: absolute;
-      top: 58px;
-      right: 0px;
-
-      /* Size  */
-      width: 180px;
-      height: 85px;
-      background-color: #fff;
-      color: #f00;
-    }
-
-    #price {
-      position: absolute;
-      top: -4px;
-      left: 0px;
-
-      width: 128px;
-      height: 85px;
-
-      font-size: 74px;
-      font-weight: 700;
-      line-height: 95px;
-      text-align: right;
-      overflow: hidden;
-    }
-
-    #price_decimal {
-      position: absolute;
-      bottom: 32px;
-      left: 130px;
-
-      font-size: 40px;
-      font-weight: 700;
-      line-height: 100%;
-      text-align: right;
-    }
-
-    #price_eur {
-      position: absolute;
-      bottom: 14px;
-      left: 130px;
-
-      font-size: 22px;
-      font-weight: 700;
-      line-height: 100%;
-      text-align: right;
-    }
-
-    #parameters_container {
-      bottom: 3px;
-      left: 3px;
-      overflow: hidden;
-      width: 205px;
-      height: 90px;
-    }
-
-    #parameters {
-      position: absolute;
-      font-size: 12px;
-      line-height: 15px;
-      width: 205px;
-      bottom: 0px;
-      left: 0px;
-      /* white-space: nowrap; */
-    }
-
-    #sale {
-      position: absolute;
-      top: 58px;
-      left: 13px;
-      /* width: 120px; */
-      height: 28px;
-      line-height: 28px;
-      padding: 0 12px 0 12px;
-
-      font-size: 18px;
-      font-weight: 700;
-      text-align: center;
-      color: #fff;
-
-      background-color: #ff0000;
-    }
-
-    #sale:before {
-      content: "";
-      position: absolute;
-      top: 0px;
-      left: -10px;
-      width: 20px;
-      height: 100%;
-      background: inherit;
-      border-radius: 50% 0 0 50%;
-    }
-
-    #sale:after {
-      content: "";
-      position: absolute;
-      top: 0px;
-      right: -10px;
-      width: 20px;
-      height: 100%;
-      background: inherit;
-      border-radius: 0 50% 50% 0;
-    }
-
-    #ean {
-      position: absolute;
-      bottom: 1px;
-      right: 2px;
-      text-align: right;
-
-      width: 145px;
-      height: 18px;
-
-      font-weight: 700;
-      text-align: right;
-      overflow: hidden;
-      font-size: 14px;
-    }
-
-    #unit_price {
-      position: absolute;
-      bottom: 19px;
-      right: 2px;
-
-      width: 120px;
-      height: 18px;
-
-      font-weight: 700;
-      text-align: right;
-      overflow: hidden;
-      font-size: 14px;
-    }
-
-    #price_box_card {
-      position: absolute;
-      top: 52px;
-      right: 2px;
-
-      width: 356px;
-      height: 90px;
-    }
-  </style>
-  <script>
-    function appendParameter(label, param) {
-      if (typeof param !== "undefined" && param != "") {
-        var tempElement;
-        var tempBr = document.createElement("br");
-
-        if (label.length) {
-          tempElement = document.createElement("span");
-          tempElement.style.fontWeight = "bold";
-          tempElement.innerHTML = label;
-          getID("parameters").appendChild(tempElement);
-        }
-        tempElement = document.createElement("span");
-        tempElement.innerHTML = param;
-        getID("parameters").appendChild(tempElement);
-        getID("parameters").appendChild(tempBr);
-      } else if (param === false && label.length) {
-        var tempElement = document.createElement("span");
-        tempElement.innerHTML = label;
-        getID("parameters").appendChild(tempElement);
-        getID("parameters").appendChild(document.createElement("br"));
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title></title>
+    <script src="textFit.js"></script>
+    <script
+      src="JsBarcode.code128.min.js"
+      type="text/javascript"
+      charset="utf-8"
+    ></script>
+    <style>
+      @font-face {
+        font-family: "Arial";
+        font-style: normal;
+        font-weight: 400;
+        src: url(./fonts/arial.ttf) format("truetype");
       }
-    }
 
-    function getID(ID) {
-      return document.getElementById(ID);
-    }
-
-    function style(id) {
-      return document.getElementById(id).style;
-    }
-
-    function priceSplit(price) {
-      if (typeof price !== "undefined" && price !== "") {
-        return price.split(".");
-      } else {
-        return ["0", "00"];
+      @font-face {
+        font-family: "Arial";
+        font-style: normal;
+        font-weight: 700;
+        src: url(./fonts/arialbd.ttf) format("truetype");
       }
-    }
 
-    function thousandSeparator(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
-
-    function setPageData(data) {
-      // zmazat po nasadení interface
-      if (typeof data.zlava_na_kartu === "undefined") {
-        data.mnozstvo_zvyhodnene = "0";
-        data.zlava_na_kartu = true;
-        data.mnozstvo_nasobky = false;
+      @font-face {
+        font-family: "notoSans";
+        font-style: normal;
+        font-weight: 700;
+        src: url(./fonts/NotoSans-Medium.ttf) format("truetype");
       }
-      // **********************
-      getID("name").innerHTML = data.name;
-      getID("ean").innerHTML = data.ean;
 
-      if (data.typ_action === "karta") {
-        style("price_box").display = "none";
-        style("sale").display = "none";
-        style("price_box_card").display = "block";
-        style("parameters_container").height = "75px";
-        style("parameters_container").borderTop = "solid black 1px"
-        style("parameters_container").width = "209px"
-        style("parameters_container").left = "-1px"
-        style("parameters").left = "2px"
+      @font-face {
+        font-family: "notoSans";
+        font-style: bold;
+        font-weight: 900;
+        src: url(./fonts/NotoSans-Black.ttf) format("truetype");
+      }
 
-        if (typeof data.price_30days !== "undefined" && data.price_30days !== "") {
-          appendParameter("", "Najnižšia cena za 30 dní:" + data.price_30days + " €" );
-        }
+      body {
+        font-family: "Arial";
+        -webkit-font-smoothing: none;
+        image-rendering: optimizeSpeed;
+        /* STOP SMOOTHING, GIVE ME SPEED  */
+        image-rendering: -webkit-optimize-contrast;
+        /* Chrome (and eventually Safari) */
+        image-rendering: optimize-contrast;
+        /* CSS3 Proposed                  */
+        margin: 0;
+        padding: 0;
+      }
 
-        data.coop_card_price = priceSplit(data.coop_card_price)
-        data.price = priceSplit(data.price)
+      div {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        z-index: 5;
+      }
 
+      #name {
+        top: 5px;
+        left: 7px;
+        width: 320px;
+        height: 42px;
+        font-weight: 900;
+        font-family: "notoSans";
+      }
 
-        if (data.zlava_na_kartu || data.mnozstvo_zvyhodnene === "0") {
-          // povodny layout
-          style("red_text").fontSize = "10px";
-          getID("red_text").innerHTML =
-            "Cena pre držiteľov nákupnej karty COOP Jednota:";
-          getID("plain_text").innerHTML = "Cena:";
-        } else if (data.mnozstvo_nasobky) {
-          style("red_text").fontSize = "13px";
-          getID("red_text").innerHTML =
-            "Cena za násobky " + data.mnozstvo_zvyhodnene + " kusov:";
-          getID("plain_text").innerHTML = "Cena za 1 kus:";
+      #description {
+        top: 45px;
+        left: 7px;
+        width: 320px;
+        height: 50px;
+        overflow: hidden;
+        font-weight: 400;
+        font-family: "notoSans";
+        color: black;
+        font-size: 13px;
+      }
+
+      #price_container {
+        width: 300px;
+        height: 75px;
+        bottom: 7px;
+        right: 55px;
+        font-weight: 700;
+        background-color: black;
+        border-radius: 5px;
+      }
+
+      #action_label {
+        left: 5px;
+        top: 5px;
+        font-size: 18px;
+      }
+
+      #price {
+        bottom: 0px;
+        left: 5px;
+        font-size: 15px;
+        width: 200px;
+        line-height: normal;
+        text-align: left;
+        overflow: hidden;
+        color: white;
+        font-weight: 900;
+        font-family: "notoSans";
+      }
+
+      #discount {
+        bottom: 7px;
+        left: 5px;
+        font-size: 27px;
+        width: 74px;
+        height: 50px;
+        background-color: red;
+        text-align: center;
+        overflow: hidden;
+        color: white;
+        line-height: 180%;
+        border-radius: 7px;
+        font-weight: 900;
+        font-family: "notoSans";
+        z-index: 115;
+      }
+
+      #sku {
+        bottom: 57px;
+        left: 7px;
+        font-size: 14px;
+        color: black;
+        font-weight: 900;
+        font-family: "notoSans";
+      }
+
+      #code {
+        bottom: 2px;
+        left: 2px;
+        font-size: 13px;
+      }
+
+      #original_price {
+        font-weight: normal;
+        font-size: 17px;
+        top: 1px;
+        left: 5px;
+        width: 170px;
+        color: #fff;
+        text-decoration: line-through;
+        font-weight: 700;
+        font-family: "notoSans";
+        text-align: left;
+      }
+
+      #price_30days {
+        font-weight: normal;
+        font-size: 10px;
+        bottom: 1px;
+        left: 5px;
+      }
+
+      #dude {
+        position: absolute;
+        width: 80px;
+        height: 90px;
+        bottom: 7px;
+        right: 53px;
+        overflow: hidden;
+        z-index: 116;
+      }
+
+      #barcode_container {
+        width: 100px;
+        height: 100px;
+        bottom: 92px;
+        right: -7px;
+        font-weight: 700;
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+      }
+
+      .barcode {
+        top: 15px;
+        left: -116px;
+        width: 0px;
+        height: 0px;
+        background-color: #fff;
+      }
+
+      #br {
+        position: relative;
+        top: 0px;
+        left: 0px;
+        width: 0px;
+      }
+    </style>
+
+    <script>
+      function getID(ID) {
+        return document.getElementById(ID);
+      }
+
+      function thousandSeparator(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      }
+
+      function setPageData(data) {
+        getID("name").innerHTML = data.name + " " + data.brand;
+        getID("original_price").innerHTML = data.original_price + ' Kč';
+        getID("sku").innerHTML = data.sku;
+        getID("description").innerHTML = typeof data.description !== 'undefined' ? data.description : '';
+        getID("discount").innerHTML = '-' + data.discount + ' %';
+        getID("price").innerHTML = thousandSeparator(data.price) + ' Kč';
+
+        if (data.typ_template === "akce") {
+          getID("discount").style.display = "block";
+          getID("original_price").style.display = "block";
+
+          getID("br").style.width = "170px";
+          getID("br").style.left = "23px";
+
+          getID("price_container").style.height = "50px";
+          getID("price_container").style.width = "220px";
+          getID("price").style.top = "19px";
+          getID("price").style.width = "170px";
+          getID("price").style.height = "30px";
         } else {
-          style("red_text").fontSize = "14px";
-          getID("red_text").innerHTML =
-            "Cena od " + data.mnozstvo_zvyhodnene + " kusov:";
-          getID("plain_text").innerHTML = "Cena za 1 kus:";
+          getID("discount").style.display = "none";
+          getID("original_price").style.display = "none";
+
+          getID("br").style.width = "170px";
+          getID("br").style.left = "23px";
+
+          getID("price_container").style.height = "50px";
+          getID("price_container").style.width = "300px";
+          getID("price").style.top = "1px";
+          getID("price").style.width = "240px";
+          getID("price").style.height = "48px";
         }
 
-        if (data.unit_measure !== data.unit_price_unit_measure) {
-          style("base_price_label").fontSize = "10px";
-          getID("base_price_label").innerHTML = "€/" + data.unit_measure;
-          style("coop_price_label").fontSize = "13px";
-          getID("coop_price_label").innerHTML = "€/" + data.unit_measure;
-          style("coop_price_label").right = "-2px";
-          style("coop_price_label").fontSize = "10px";
-          style("coop_price_label").position = "absolute";
-          style("coop_price_label").bottom = "4px";
-          style("base_price_label").position = "absolute";
-          style("base_price_label").left = "90px";
-          style("base_price_label").bottom = "24px";
-        } else {
-          style("base_price_label").fontSize = "14px";
-          getID("base_price_label").innerHTML = "EUR";
-          getID("coop_price_label").innerHTML = "EUR";
-          style("coop_price_label").fontSize = "16px"
-          style("coop_price_label").right = "-1px";
-          style("coop_price_label").position = "absolute";
-          style("coop_price_label").bottom = "-6px";
-          style("base_price_label").position = "absolute";
-          style("base_price_label").left = "90px";
-          style("base_price_label").bottom = "22px";
-        }
+        JsBarcode("#br", data.sku, {
+          height: 85,
+          width: 3,
+          displayValue: false,
+          background: "none",
+        });
 
-        getID("unit_price").innerHTML = "";
-        getID("base_price_value").innerHTML = data.price[0] + ",";
-        getID("base_price_decimal").innerHTML = data.price[1];
-        getID("base_unit_price").innerHTML =
-          "JC:" + data.unit_price + " €/" + data.unit_measure;
-        getID("coop_price_value").innerHTML = data.coop_card_price[0] + ",";
-        getID("coop_price_decimal").innerHTML = data.coop_card_price[1];
-        getID("coop_unit_price").innerHTML =
-          "JC:" +
-          data.coop_card_unit_price +
-          " €/" +
-          data.unit_price_unit_measure;
+        textFit(document.getElementById("name"), {
+          minFontSize: 10,
+          maxFontSize: 30,
+          multiLine: true,
+        });
+
+        textFit(document.getElementById("price"), {
+          minFontSize: 10,
+          maxFontSize: 35,
+        });
+
+        textFit(document.getElementById("description"), {
+          minFontSize: 10,
+          maxFontSize: 30,
+          multiLine: true,
+        });
+
+        return true;
       }
-      else {
-        style("price_box").display = "block";
-        style("price_box_card").display = "none";
-        style("parameters_container").height = "92px";
-        style("parameters_container").borderTop = "none"
+    </script>
+  </head>
 
-        data.price = priceSplit(data.price);
-
-        style("price").fontFamily =
-          style("price_decimal").fontFamily =
-          style("price_eur").fontFamily =
-          data.tempo ? "Harabara" : "Arial";
-
-        if (data.price[0].length > 2) {
-          style("price_decimal").left = style("price_eur").left = "130px";
-          style("price").width = "128px";
-          style("price_box").width = "180px";
-        } else {
-          getID("price_decimal").style.left = style("price_eur").left =
-            "95px";
-          style("price").width = "93px";
-          style("price_box").width = "145px";
-        }
-
-        getID("price").innerHTML = data.price[0];
-        getID("price_decimal").innerHTML = data.price[1];
-        if (data.unit_measure !== data.unit_price_unit_measure) {
-          style("price_eur").fontSize = "14px";
-          getID("price_eur").innerHTML = "€/" + data.unit_measure;
-        } else {
-          style("price_eur").fontSize = "22px";
-          getID("price_eur").innerHTML = "EUR";
-        }
-        getID("unit_price").innerHTML =
-          "JC: " + data.unit_price + " €/" + data.unit_price_unit_measure;
-        switch (data.typ_action) {
-          case "akcia":
-            style("price_box").background = "red";
-            style("price_box").color = "white";
-            style("sale").display = "block";
-            style("sale").background = "red";
-            style("sale").color = "white";
-            style("sale").fontSize = "18px";
-            getID("sale").innerHTML = "AKCIA";
-            style("name").color = "black";
-            break;
-          case "dnc":
-            style("price_box").background = "white";
-            style("price_box").color = "red";
-            style("sale").display = "block";
-            style("sale").background = "black";
-            style("sale").color = "white";
-            style("sale").fontSize = "18px";
-            getID("sale").innerHTML = "DNC";
-            style("name").color = "black";
-            break;
-          case "vlastna_znacka":
-            style("price_box").background = "white";
-            style("price_box").color = "black";
-            style("sale").display = "block";
-            style("sale").background = "red";
-            style("sale").color = "white";
-            style("sale").fontSize = "14px";
-            getID("sale").innerHTML = "VL. ZNAČKA";
-            style("name").color = "red";
-            break;
-          default:
-            style("price_box").background = "white";
-            style("price_box").color = "black";
-            style("sale").display = "none";
-            style("name").color = "black";
-            break;
-        }
-        
-      }
-
-      getID("parameters").innerHTML = "";
-      appendParameter("Dodávateľ: ", data.supplier);
-      switch (data.typ_template) {
-        case "ovocie_zelenina":
-          appendParameter("Kr. pôvodu: ", data.place_of_origin);
-          appendParameter("Tr. kvality: ", data.grade);
-          appendParameter("Odroda: ", data.variety);
-          break;
-        case "cerstve_maso":
-        case "masove_vyrobky":
-        case "pecivo":
-          appendParameter(data.description, false);
-          appendParameter("Spotrebujte do: ", data.consumption_date)
-          appendParameter(data.alergens, false);
-          break;
-        case "zakusky":
-          appendParameter(data.alergens, false);
-          appendParameter("Spotrebujte do: ", data.consumption_date)
-          break;
-        case "salaty":
-        case "syry":
-        default:
-          // nezobrazujeme ziadne dodatocne parametre
-          break;
-      }
-
-      if (data.isPackaged) {
-        appendParameter("Dátum rozbalenia: ", data.open_date);
-        appendParameter("Spotrebujte do: ", data.expiration_date);
-      }
-
-      if (data.rp_price.length > 0) {
-        appendParameter("záloh za obal: " + data.rp_price + "€", false);
-      }
-
-      if (typeof data.price_30days !== "undefined" && data.price_30days !== "") {
-        appendParameter("", "Najnižšia cena za 30 dní:" + data.price_30days + " €" );
-      }
-
-      textFit(getID("name"), {
-        minFontSize: 10,
-        multiLine: true,
-        alignVert: true,
-      });
-      
-      return true;
-    }
-
-    //     window.onload = function () {
-    //   setPageData(    {
-    // "_id": "64f80f4ae2535c02f901717b",
-    // "sku": "3390",
-    // "store": "511",
-    // "ean": "283390",
-    // "category": "ČERVENÉ M.BAL.BRAVČOVÉ",
-    // "name": "Bôčik BK",
-    // "price": "5.52",
-    // "unit_price": "5.520",
-    // "sale_price": "2.99",
-    // "sale_unit_price": "2.990",
-    // "coop_card_price": "",
-    // "coop_card_unit_price": "0.000",
-    // "unit_price_ratio": "1.000",
-    // "unit_measure": "kg",
-    // "unit_price_unit_measure": "kg",
-    // "discount_percentage": "45.83",
-    // "package": "1.00",
-    // "supplier": "DIAMON Slovakia, s.r.o.",
-    // "description": "červené mäso bravčové balené",
-    // "grade": "červené mäso bravčové balené",
-    // "alergens": "neobsahuje alergény",
-    // "action_type": "CV144",
-    // "pricelist_name": "",
-    // "price_valid_from": "28.09.2024 07:39",
-    // "price_valid_to": "08.10.2024 23:59",
-    // "valid": "1",
-    // "dual_price": "6.02",
-    // "supplier_city": "Poprad",
-    // "product_group": "11",
-    // "category_coop": "1.1.1.1.02",
-    // "manufacturer_number": "3521",
-    // "manufacturer": "DIAMON Slovakia, s.r.o.",
-    // "manufacturer_city": "Poprad",
-    // "brand": "",
-    // "consumption_date": "",
-    // "rp_price": "",
-    // "typ_template": "cerstve_maso",
-    // "typ_action": "karta",
-    // "template": "default",
-    // "tempo": true,
-    // "createdAt": "2024-02-05T12:04:05.248Z",
-    // "updatedAt": "2024-10-02T10:34:02.839Z",
-    // "isPackaged": true,
-    // "expiration_date": "05.10.2024 12:42",
-    // "expiration_date_ts": "1728124920",
-    // "open_date": "02.10.2024 12:42",
-    // "mnozstvo_zvyhodnene": "0",
-    // "mnozstvo_nasobky": false,
-    // "zlava_na_kartu": true,
-    // "price_30days": "7.99"
-    //   });
-    // };
-  </script>
-</head>
-
-<body style="background: wheat">
-  <div id="tag" style="
+  <body style="background: wheat">
+    <div
+      style="
         width: 360px;
         height: 184px;
-        top: 0;
-        left: 0;
+        top: 0px;
+        left: 0px;
         overflow: hidden;
-        background-color: #fff;
-      ">
-    <div id="name"></div>
-    <div id="sale">AKCIA</div>
-    <div id="price_box_card">
-      <div id="box_left" style="
-            left: 0;
-            top: -5px;
-            width: 205px;
-            height: 56px;
-            text-align: center;
-            overflow: hidden;
-          ">
-        <div id="plain_text" style="
-              top: 25px;
-              font-size: 12px;
-              font-weight: bold;
-              left: 28px;
-              text-align: left;
-              width: 90%;
-            ">
-          Cena:
+        background-color: white;
+      "
+    >
+      <div id="name"></div>
+      <div id="description"></div>
+      <div id="sku"></div>
+      <div id="barcode_container">
+        <div class="barcode">
+          <svg style="left: 3px; position: relative" id="br"></svg>
         </div>
-        <div id="base_price" style="width: 150px; height: 70px; left: 55px; font-weight: bold; bottom: -20px;">
-          <div id="base_price_value" style="font-size: 41px; right: 60px; bottom: 20px;"></div>
-          <div id="base_price_decimal" style="font-size: 25px; right: 32px; bottom: 35px;"></div>
-          <span id="base_price_label"></span>
-        </div>
-        <div id="base_unit_price" style="bottom: 3px; left: 10px; font-size: 11px"></div>
       </div>
-      <div id="box_right" style="
-            right: -2px;
-            bottom: 0;
-            width: 152px;
-            height: 100%;
-            background: red;
-            overflow: hidden;
-            color: white;
-          ">
-        <div id="red_text" style="
-              top: 2px;
-              left: 2px;
-              font-size: 10px;
-              font-weight: bold;
-              text-align: left;
-              width: 100%;
-            ">
-          Cena pre držiteľov nákupnej karty COOP Jednota:
-        </div>
-        <div id="coop_price" style="
-              bottom: 14px;
-              right: 4px;
-              font-size: 44px;
-              font-weight: bold;
-              text-align: right;
-              width: 100%;
-            ">
-          <div id="coop_price_value" style="font-size: 45px; right: 32px; bottom: -7px;"></div>
-          <div id="coop_price_decimal" style="font-size: 30px; right: -1px; bottom: 7px;"></div>
-          <span id="coop_price_label" style="font-size: 42px;"></span>
-        </div>
-        <div id="coop_unit_price" style="bottom: 4px; left: 4px; font-size: 11px; text-align: right"></div>
-      </div>
-    </div>
-    <div id="price_box">
-      <div id="price"></div>
-      <div id="price_decimal"></div>
-      <div id="price_eur"></div>
-    </div>
-    <div id="parameters_container">
-      <div id="parameters"></div>
-    </div>
-    <div id="ean"></div>
-    <div id="unit_price"></div>
-  </div>
-</body>
 
+      <div id="price_container">
+        <div id="action_label"></div>
+        <div id="original_price"></div>
+        <div id="price"></div>
+        <div id="price_decimal"></div>
+      </div>
+
+      <div id="code"></div>
+      <img id="dude" src="pictures/dude.png" />
+
+      <div id="discount"></div>
+    </div>
+  </body>
 </html>

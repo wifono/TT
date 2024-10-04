@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title></title>
+  <script src="textFit.js"></script>
+  <script src="qr.js"></script>
+  <style>
+    @font-face {
+      font-family: "Arial";
+      font-style: normal;
+      font-weight: 400;
+      src: url(./fonts/arial.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Arial";
+      font-style: normal;
+      font-weight: 700;
+      src: url(./fonts/arialbd.ttf) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Gil";
+      font-style: normal;
+      font-weight: 400;
+      src: url(./fonts/gilroy-regular.woff2) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Gil";
+      font-style: normal;
+      font-weight: 600;
+      src: url(./fonts/gilroy-medium.woff2) format("truetype");
+    }
+
+    @font-face {
+      font-family: "Gil";
+      font-style: bold;
+      font-weight: 700;
+      src: url(./fonts/gilroy-semibold.woff2) format("truetype");
+    }
+
+    body {
+      font-family: "Gil";
+      -webkit-font-smoothing: none;
+      image-rendering: optimizeSpeed;
+      /* STOP SMOOTHING, GIVE ME SPEED  */
+      image-rendering: -webkit-optimize-contrast;
+      /* Chrome (and eventually Safari) */
+      image-rendering: optimize-contrast;
+      /* CSS3 Proposed                  */
+      margin: 0;
+      padding: 0;
+    }
+
+    div {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      z-index: 5;
+    }
+
+    #name {
+      top: 30px;
+      left: 4px;
+      width: 395px;
+      height: 70px;
+
+      font-weight: bold;
+      color: #000;
+
+      white-space: normal;
+      /* Zmena z nowrap na normal */
+      overflow-wrap: break-word;
+
+    }
+
+    #brand {
+      top: 5px;
+      left: 5px;
+      width: 400px;
+      overflow: hidden;
+
+      font-size: 20px;
+      color: red;
+    }
+
+    #price {
+      top: 140px;
+      right: 5px;
+      text-align: right;
+      line-height: 20px;
+
+      font-size: 50px;
+      font-weight: 700;
+
+      color: #000;
+    }
+
+    #price_web {
+      bottom: 84px;
+      right: 5px;
+      text-align: right;
+      font-size: 24px;
+    }
+
+    #unit {
+      bottom: 132px;
+      left: 5px;
+      font-size: 20px;
+      width: 210px;
+    }
+
+    #unit_price {
+      bottom: 110px;
+      left: 5px;
+      font-size: 16px;
+    }
+
+    #web {
+      bottom: 84px;
+      left: 4px;
+      font-size: 24px;
+    }
+
+    #DPH {
+      top: 105px;
+      right: 5px;
+      height: 10px;
+      font-size: 16px;
+      text-align: right;
+    }
+
+    #more_on {
+      right: 95px;
+      bottom: 4px;
+      font-size: 18px;
+    }
+
+    #qr_code {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      right: 5px;
+      bottom: 4px;
+    }
+
+    #ksis {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+    }
+
+
+    #whiteblock {
+      position: absolute;
+      width: 400px;
+      height: 300px;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      background-color: #fff;
+      z-index: 999;
+    }
+
+    #logo {
+      position: absolute;
+      width: 400px;
+      height: 300px;
+      top: 0px;
+      left: 0px;
+      overflow: hidden;
+      background-color: #fff;
+      z-index: 9999;
+    }
+  </style>
+  <script>
+    function getID(ID) {
+      return document.getElementById(ID);
+    }
+
+    function style(id) {
+      return document.getElementById(id).style;
+    }
+
+    function hide(id) {
+      document.getElementById(id).style.display = "none";
+    }
+    function show(id) {
+      document.getElementById(id).style.display = "block";
+    }
+
+    function getPriceWeb(price) {
+      try {
+        var p = Number(price)
+        if (isNaN(p)) {
+          return price
+        } else if (price === '0' || price === '') {
+          return 'Vypredané'
+        } else {
+          return p.toFixed(2) + ' €'
+        }
+      } catch (e) {
+        return price
+      }
+    }
+
+    function getPrice(price) {
+      try {
+        return Number(price).toFixed(2)
+      } catch (e) {
+        return price
+      }
+    }
+
+    function setQR(data) {
+      try {
+        show("qr_code");
+        getID("qr_code").src = toGif(quickresponse(data, "L", 1), 20);
+      } catch (e) {
+        hide("qr_code");
+        // console.log(e);
+      }
+    }
+
+    function setPageData(data) {
+
+      setQR(data.qr_code);
+
+      getID("name").innerHTML = data.name;
+      getID("brand").innerHTML = data.brand;
+
+      getID("price").innerHTML = getPrice(data.price) + " €";
+
+      getID("price_web").innerHTML = getPriceWeb(data.price_web + '')
+
+      getID("unit").innerHTML = data.unit_measure
+      getID("unit_price").innerHTML = getPrice(data.unit_price) + " € / " + data.unit_price_unit_measure + ' ' + data.unit_price_unit;
+
+      getID("web").style.right = (getID("price_web").offsetWidth + 10) + 'px'
+
+      if (data.stock + '' === "0") {
+        show("whiteblock")
+        show("logo")
+      }
+      else {
+        hide("whiteblock")
+        hide("logo")
+      }
+
+      textFit(getID("name"), {
+        minFontSize: 16,
+        maxFontSize: 40,
+        multiLine: true
+      });
+
+
+      return true;
+    }
+
+    // window.onload = function () {
+    //   setPageData({
+    //     "_id": "664b35aeef8a86e91b0f6c29",
+    //     "sku": "0001908",
+    //     "store": "15",
+    //     "name": "Collagen&Hyaluronic Acid All-In-One Ampoule",
+    //     "brand": "Pyunkang Yul",
+    //     "qr_code": "https://ksisters.sk/product/pyunkang-yul-deep-cleansing-oil?sku=2100831utm_source=nivy&utm_medium=offline-store&utm_campaign=price-tag",
+    //     "ean": [
+    //       "8809486681282"
+    //     ],
+    //     "stock": 0,
+    //     "price": 28,
+    //     "price_web": 20,
+    //     "unit_measure": "290 ml",
+    //     "unit_price": 9.66,
+    //     "unit_price_unit": "ml",
+    //     "unit_price_unit_measure": 100,
+    //     "_data": "{\"sku\":\"0001908\",\"store\":\"15\",\"name\":\"Deep Cleansing Oil\",\"brand\":\"Pyunkang Yul\",\"qr_code\":\"https://ksisters.sk/product/pyunkang-yul-deep-cleansing-oil?sku=2100831utm_source=nivy&utm_medium=offline-store&utm_campaign=price-tag\",\"ean\":[\"8809486681282\"],\"price\":28,\"price_web\":20,\"unit_measure\":\"290 ml\",\"unit_price\":9.66,\"unit_price_unit\":\"ml\",\"unit_price_unit_measure\":100}",
+    //     "createdAt": "2024-05-20T11:36:14.472Z",
+    //     "updatedAt": "2024-05-20T11:36:14.472Z"
+    //   });
+    // };
+  </script>
+</head>
+
+<body style="background: wheat">
+  <div id="tag" style="
+      width: 400px;
+      height: 300px;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      background-color: #fff;
+    ">
+    <div id="name"></div>
+    <div id="brand"></div>
+    <div id="ean"></div>
+
+    <div id="DPH">Vrátane DPH</div>
+    <div id="price"></div>
+
+    <div id="unit"></div>
+    <div id="unit_price"></div>
+
+    <div id="web">Cena na webe</div>
+    <div id="price_web"></div>
+
+
+    <img class="csisters" id="ksis" src="logo/ksisters_middle.png" />
+
+    <div id="more_on">Viac na Ksisters.sk</div>
+
+    <img id="qr_code" />
+    <div id="whiteblock"></div>
+    <img id="logo" src="logo/ksisters_400x300.png" />
+</body>
+
+</html>

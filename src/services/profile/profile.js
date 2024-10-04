@@ -19,6 +19,8 @@ export const profileMethods = ['find', 'get', 'create', 'patch', 'remove']
 export * from './profile.class.js'
 export * from './profile.schema.js'
 
+import { profileHook } from '../../hooks/profile.js'
+
 // A configure function that registers the service and its hooks via `app.configure`
 export const profile = (app) => {
   // Register our service on the Feathers application
@@ -35,9 +37,13 @@ export const profile = (app) => {
     },
     before: {
       all: [schemaHooks.validateQuery(profileQueryValidator), schemaHooks.resolveQuery(profileQueryResolver)],
-      find: [],
-      get: [],
-      create: [schemaHooks.validateData(profileDataValidator), schemaHooks.resolveData(profileDataResolver)],
+      find: [profileHook],
+      get: [profileHook],
+      create: [
+        schemaHooks.validateData(profileDataValidator),
+        schemaHooks.resolveData(profileDataResolver),
+        profileHook
+      ],
       patch: [schemaHooks.validateData(profilePatchValidator), schemaHooks.resolveData(profilePatchResolver)],
       remove: []
     },

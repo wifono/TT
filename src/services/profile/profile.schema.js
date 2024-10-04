@@ -7,10 +7,10 @@ export const profileSchema = {
   $id: 'Profile',
   type: 'object',
   additionalProperties: false,
-  required: ['id', 'text'],
+  required: ['label', 'value'],
   properties: {
-    id: { type: 'number' },
-    text: { type: 'string' }
+    label: { type: 'string' },
+    value: { type: 'string' }
   }
 }
 export const profileValidator = getValidator(profileSchema, dataValidator)
@@ -23,7 +23,7 @@ export const profileDataSchema = {
   $id: 'ProfileData',
   type: 'object',
   additionalProperties: false,
-  required: ['text'],
+  required: ['label'],
   properties: {
     ...profileSchema.properties
   }
