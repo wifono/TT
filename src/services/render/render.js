@@ -50,6 +50,7 @@ export const render = (app) => {
       console.log('Receiving file...')
       const templateFile = req.file
       const tempType = req.body.tempType
+      const profilePath = req.body.profilePath
 
       if (!templateFile) {
         throw new Error('No template file uploaded')
@@ -60,7 +61,7 @@ export const render = (app) => {
       }
 
       const cleanedTempType = cleanTempType(tempType)
-      const extractedPath = path.join('uploads/', cleanedTempType)
+      const extractedPath = path.join('uploads/', profilePath, cleanedTempType)
       console.log('Extracting file to:', extractedPath)
 
       // Zisti, či priečinok existuje
@@ -110,7 +111,8 @@ export const render = (app) => {
         repeats: req.body.repeats,
         article: req.body.article,
         width: req.body.size.width,
-        height: req.body.size.height
+        height: req.body.size.height,
+        profilePath: req.body.profilePath
       }
 
       const imageBuffer = await PhantomRenderer.renderImage(opts)

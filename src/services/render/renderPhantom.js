@@ -5,14 +5,13 @@ const singleton = Symbol()
 const singletonEnforcer = Symbol()
 const physicalCpuCount = amount
 
-const PHANTOM_INSTANCES = 1
+const PHANTOM_INSTANCES = 2
 
 export class Phantom {
   constructor(enforcer) {
-    if (enforcer != singletonEnforcer) {
+    if (enforcer !== singletonEnforcer) {
       throw new Error('Cannot construct singleton')
     }
-    //count of instances
     console.info('Initializing renderer, count: ' + PHANTOM_INSTANCES)
     this.instances = parseInt(PHANTOM_INSTANCES)
     if (this.instances > physicalCpuCount * 2) {
@@ -21,15 +20,10 @@ export class Phantom {
     }
     this.initialising = true
 
-    //internal counter
     this.counter = 0
     this.templates = {}
-    this.templatesConfig = {}
     this.templatesInUse = {}
     this.browsers = []
-    this.templateSources = []
-    this.url = ''
-    this.templateStats = {}
   }
 
   static get instance() {
@@ -45,12 +39,11 @@ export class Phantom {
 
   async init() {
     console.info('Renderer instances start')
-    for (var i = 1; i <= this.instances; i++) {
+    for (let i = 1; i <= this.instances; i++) {
       this.browsers.push(
         await phantom.create(['--local-url-access=true', '--disk-cache=true', '--max-disk-cache-size=10000'])
       )
     }
-
     await Promise.all(this.browsers)
   }
 
@@ -63,60 +56,73 @@ export class Phantom {
 
   async initTemplate(template, opts) {
     this.initialising = true
-    const templateName = template
-    console.info(`Initializing template: ${templateName} - ${opts._phantomKey}`)
+    const phantomKey = opts._phantomKey
+    const profilePath = opts.profilePath
 
-    let temp = []
-    let tempInUse = {}
+    console.info(`Initializing template for profilePath: ${profilePath} - ${phantomKey}`)
 
-    const settings = {
-      top: 0,
-      left: 0,
-      width: opts.width,
-      height: opts.height
+    if (!this.templates[phantomKey]) {
+      this.templates[phantomKey] = {}
+      this.templatesInUse[phantomKey] = {}
     }
 
-    try {
-      const phantomKey = `${opts._phantomKey}`
+    if (!this.templates[phantomKey][profilePath]) {
+      let temp = []
+      let tempInUse = {}
 
-      for (let i = 0; i < this.instances; i++) {
-        const filePath = `uploads/` + template + `/index.html`
-
-        const pagePromise = this.browsers[i].createPage().then(async (page) => {
-          await page.property('clipRect', settings)
-          await page.property(
-            'userAgent',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
-          )
-          await page.property('dpi', '150')
-          await page.open(filePath)
-          await page.evaluate(function () {
-            var style = document.createElement('style')
-            var text = document.createTextNode(
-              'body { background-color: #FFFFFF; -webkit-font-smoothing: none !important; }'
-            )
-            style.setAttribute('type', 'text/css')
-            style.appendChild(text)
-            document.head.insertBefore(style, document.head.firstChild)
-          })
-
-          temp.push(page)
-          tempInUse[i] = false
-        })
-
-        await pagePromise
+      const settings = {
+        top: 0,
+        left: 0,
+        width: opts.width,
+        height: opts.height
       }
 
-      this.templates[phantomKey] = temp
-      this.templatesInUse[phantomKey] = tempInUse
+      try {
+        for (let i = 0; i < this.instances; i++) {
+          const filePath = `uploads/${profilePath}/${opts.template}/index.html`
+          console.log(filePath)
 
+          const pagePromise = this.browsers[i].createPage().then(async (page) => {
+            await page.property('clipRect', settings)
+            await page.property(
+              'userAgent',
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
+            )
+            await page.property('dpi', '150')
+            await page.open(filePath)
+            await page.evaluate(function () {
+              const style = document.createElement('style')
+              const text = document.createTextNode(
+                'body { background-color: #FFFFFF; -webkit-font-smoothing: none !important; }'
+              )
+              style.setAttribute('type', 'text/css')
+              style.appendChild(text)
+              document.head.insertBefore(style, document.head.firstChild)
+            })
+
+            temp.push(page)
+            tempInUse[i] = false
+          })
+
+          await pagePromise
+        }
+
+        this.templates[phantomKey][profilePath] = temp
+        this.templatesInUse[phantomKey][profilePath] = tempInUse
+
+        await this.sleep(100)
+        this.initialising = false
+        return this.templates
+      } catch (error) {
+        console.error('Error initializing template:', error)
+        this.initialising = false
+        throw error
+      }
+    } else {
+      console.info(`Template for profilePath ${profilePath} already initialized`)
       await this.sleep(100)
       this.initialising = false
-      return this.templates
-    } catch (error) {
-      console.error('Error initializing template:', error)
-      this.initialising = false
-      throw error
+      return this.templates[phantomKey][profilePath]
     }
   }
 
@@ -134,25 +140,23 @@ export class Phantom {
     }
 
     const count = this.getCounter()
-    if (this.templates[phantomKey] === undefined) {
+    if (!this.templates[phantomKey] || !this.templates[phantomKey][opts.profilePath]) {
       await this.initTemplate(template, opts)
     }
 
-    if (this.templatesInUse[phantomKey][count] === false) {
-      this.templatesInUse[phantomKey][count] = true
-      return this.templates[phantomKey][count]
+    if (this.templatesInUse[phantomKey][opts.profilePath][count] === false) {
+      this.templatesInUse[phantomKey][opts.profilePath][count] = true
+      return this.templates[phantomKey][opts.profilePath][count]
     }
 
     await this.sleep(this.getRandomInt(1, 10))
     return await this.getTemplate(template, opts)
   }
 
-  async renderBase64(p, phantomKey) {
-    const count = this.getCounter()
-    await this.sleep(2)
-    const t = await p.renderBase64('PNG')
-    this.templatesInUse[phantomKey][count] = false
-    return t
+  async renderBase64(page, phantomKey, profilePath, count) {
+    const image = await page.renderBase64('PNG')
+    this.templatesInUse[phantomKey][profilePath][count] = false
+    return image
   }
 
   async renderImage(opts) {
@@ -161,14 +165,16 @@ export class Phantom {
       opts['_phantomKey'] = template + '_' + opts.width + 'x' + opts.height
       const phantomKey = opts._phantomKey
 
+      const count = this.getCounter()
       const page = await this.getTemplate(template, opts)
+
       const data = opts.article
 
       await page.evaluate(function (args) {
         setPageData(args)
       }, data)
 
-      const image = await this.renderBase64(page, phantomKey)
+      const image = await this.renderBase64(page, phantomKey, opts.profilePath, count)
       return Buffer.from(image, 'base64')
     } catch (error) {
       console.error('Error rendering image:', error)
