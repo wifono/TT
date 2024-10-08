@@ -14,5 +14,9 @@ export const profiles = [
   {
     "label": "Kytary",
     "value": "kytary/"
+  },
+  {
+    "label": "brezno",
+    "value": "brezno/"
   }
 ]
